@@ -159,12 +159,15 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
+          console.info('-----------user/login------------------')
           this.$store.dispatch('user/login', this.loginForm)
             .then(() => {
+              console.info('-----------LoginOK------------------')
               this.$router.push({ path: this.redirect || '/' })
               this.loading = false
             })
-            .catch(() => {
+            .catch((error) => {
+              console.info('-----------Loginerror:' + error)
               this.loading = false
             })
         } else {

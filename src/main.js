@@ -18,7 +18,7 @@ import './permission' // permission control
 import './utils/error-log' // error log
 
 import * as filters from './filters' // global filters
-
+import Print from '@/utils/print'
 /**
  * If you don't want to use mock-server
  * you want to use mockjs for request interception
@@ -27,7 +27,7 @@ import * as filters from './filters' // global filters
  * import { mockXHR } from '../mock'
  * mockXHR()
  */
-
+Vue.use(Print)
 Vue.use(Element, {
   size: Cookies.get('size') || 'medium' // set element-ui default size
 })
