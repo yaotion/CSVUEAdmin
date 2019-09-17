@@ -19,7 +19,7 @@ for (let i = 0; i < count; i++) {
     OptTime: '@datetime',
     CardNo: '01000111100000' + '@string("number", 4, 4)',
     Price: '@float(5,9,2,2)',
-
+    StationName: '@cname',
     Amn: function() {
       return (this.Price * this.Qty).toFixed(2)
     },
@@ -45,19 +45,20 @@ sum.DeSaveMoneys = 0
 sum.TradeMoneys = 0
 sum.SaveMoneys = 0
 sum.PreMoneys = 0
+sum.UnOilMoneys = 0
 for (let i = 0; i < count; i++) {
   if (List[i].TypeID === 0) {
-    sum.TradeQtys = FloatAdd(sum.TradeQtys, List[i].Qtys)
-    sum.TradeMoneys = FloatAdd(sum.TradeMoneys, List[i].Moneys)
+    sum.TradeQtys = FloatAdd(sum.TradeQtys, List[i].Qty)
+    sum.TradeMoneys = FloatAdd(sum.TradeMoneys, List[i].Amn)
   }
   if (List[i].TypeID === 1) {
-    sum.DeSaveMoneys = FloatAdd(sum.DeSaveMoneys, List[i].Moneys)
+    sum.DeSaveMoneys = FloatAdd(sum.DeSaveMoneys, List[i].Amn)
   }
   if (List[i].TypeID === 2) {
-    sum.SaveMoneys = FloatAdd(sum.SaveMoneys, List[i].Moneys)
+    sum.SaveMoneys = FloatAdd(sum.SaveMoneys, List[i].Amn)
   }
   if (List[i].TypeID === 3) {
-    sum.PreMoneys = FloatAdd(sum.PreMoneys, List[i].Moneys)
+    sum.PreMoneys = FloatAdd(sum.PreMoneys, List[i].Amn)
   }
 }
 

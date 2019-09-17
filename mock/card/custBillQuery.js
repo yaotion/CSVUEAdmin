@@ -9,17 +9,20 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     OptTime: '@datetime',
     stationno: '0000000' + '@string("number", 1, 1)',
+    StationName: '0000000' + '@string("number", 1, 1)' + '站',
     OptNo: '@string("number", 4, 4)',
     IsSave: '@integer(0, 8)',
-    SaveType: function() {
+    TypeId1: '@integer(1, 11)',
+
+    PayAMN: function() {
       if (this.IsSave in [0, 1]) { return TradeTypeArray[this.IsSave] }
       return '-'
     },
-    SaveMoney: function() {
-      if (this.IsSave in [0, 1]) { return '@float(10,30,2,2)' }
+    PayType: function() {
+      if (this.IsSave in [0, 1]) { return TradeTypeArray[this.IsSave] }
       return '-'
     },
-    AccMoney: function() {
+    AccBalance: function() {
       if (this.IsSave in [0, 1]) { return '@float(10,30,2,2)' }
       return '-'
     },
@@ -32,7 +35,7 @@ for (let i = 0; i < count; i++) {
       if (this.IsSave > 1) { return '@string("number", 8, 8)' }
       return '-'
     },
-    ChangeMoney: function() {
+    ChangeAMN: function() {
       if ((this.IsSave === 2) || (this.IsSave === 3)) { return '@float(10,30,2,2)' }
       return '-'
     },
@@ -40,7 +43,7 @@ for (let i = 0; i < count; i++) {
       if ((this.IsSave === 2) || (this.IsSave === 3)) { return TradeTypeArray[this.IsSave] }
       return '-'
     },
-    AccBalance: function() {
+    AccBalance2: function() {
       if ((this.IsSave === 2) || (this.IsSave === 3)) { return '@float(10,30,2,2)' }
       return '-'
     },

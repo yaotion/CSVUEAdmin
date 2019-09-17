@@ -8,22 +8,22 @@ const count = 100
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
-    stationno: '0000000' + '@string("number", 1, 1)',
+    StationName: '0000000' + '@string("number", 1, 1)',
     OilCode: '@integer(0, 2)',
     OilName: function() {
       return OilNameArray[this.OilCode]
     },
     OptNo: '@string("number", 4, 4)',
-    machTime: '@datetime',
+    OptTime: '@datetime',
     TType: '@integer(0, 3)',
     TradeType: function() {
       return TradeTypeArray[this.TType]
     },
     Qty: '@float(20, 30,2 ,2)',
 
-    Balance: '@float(200, 500,2 ,2)',
+    BAL: '@float(200, 500,2 ,2)',
     Price: '@float(5, 9,2 ,2)',
-    Money: function() {
+    AMN: function() {
       return (this.Qty * this.Price).toFixed(2)
     }
   }))
