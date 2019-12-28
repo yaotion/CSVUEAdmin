@@ -11,21 +11,24 @@ export function centerOilAdd(query) {
   return request({
     url: '/centerOil/centerOilAdd',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function centerOilUpdate(query) {
   return request({
     url: '/centerOil/centerOilUpdate',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function centerOilDelete(query) {
   return request({
     url: '/centerOil/centerOilDelete',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 

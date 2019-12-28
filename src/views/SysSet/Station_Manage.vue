@@ -1,3 +1,4 @@
+/* eslint-disable vue/html-quotes */
 <template>
   <div class="app-container">
     <div class="filter-container">
@@ -22,6 +23,7 @@
         id="tabData"
         :key="tableKey"
         v-loading="listLoading"
+        height="600"
         :data="list"
         border
         size="mini"
@@ -43,7 +45,7 @@
         <el-table-column label="银行账号" prop="BankAccNo" align="center" width="160" />
         <el-table-column label="地址" prop="Address" align="center" width="250" />
         <el-table-column label="备注" prop="Memo" align="center" width="250" />
-        <el-table-column v-if="notExporting" label="操作" align="center" width="230" class-name="small-padding fixed-width">
+        <el-table-column v-if="notExporting" label="操作" fixed="right" align="center" width="230" class-name="small-padding fixed-width">
           <template slot-scope="{row}">
             <el-button type="primary" size="mini" @click="handleUpdate(row)">
               Edit
@@ -51,6 +53,9 @@
 
             <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row)">
               Delete
+            </el-button>
+            <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleInit(row)">
+              Init
             </el-button>
           </template>
         </el-table-column>
@@ -157,7 +162,7 @@
 </template>
 
 <script>
-import { stationDetailListQuery, stationAdd, stationUpdate, stationDelete } from '@/api/stationManage'
+import { stationDetailListQuery, stationAdd, stationUpdate, stationDelete, stationInit } from '@/api/stationInfo'
 import { tableToExcel } from '@/utils/excelUtils'
 // import printJS from 'print-js'
 import waves from '@/directive/waves' // waves directive
@@ -173,14 +178,16 @@ export default {
       list: null,
       listLoading: true,
       stationTypeList: [
-        { stationType: '0',
+        { stationType: -1,
+          stationTypeName: '全部类型' },
+        { stationType: 0,
           stationTypeName: '加油站' },
-        { stationType: '1',
+        { stationType: 1,
           stationTypeName: '发卡点' }
       ],
       listQuery: {
         stationNo: '',
-        stationType: ''
+        stationType: -1
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -257,7 +264,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           stationAdd(this.temp).then(() => {
-            this.list.unshift(this.temp)
+            this.handleFilter()
             console.info(this.temp)
             this.dialogFormVisible = false
             this.$notify({
@@ -272,6 +279,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
+      console.info(this.temp)
 
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
@@ -283,15 +291,9 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-
+          console.info(tempData)
           stationUpdate(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.StationNo === this.temp.StationNo) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
-                break
-              }
-            }
+            this.handleFilter()
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -329,7 +331,30 @@ export default {
         })
       })
     },
-
+    handleInit(row) {
+      this.$confirm('此操作将会引起客户端重新注册, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.handleInitMethod(row)
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消初始化'
+        })
+      })
+    },
+    handleInitMethod(row) {
+      stationInit(row).then(() => {
+        this.$notify({
+          title: 'Success',
+          message: 'Init Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
     handleDownload() {
       this.downloadLoading = true
       this.notExporting = false

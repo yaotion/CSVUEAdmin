@@ -18,42 +18,48 @@ export function depositActAdd(query) {
   return request({
     url: '/deposit/depositActAdd',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function depositActUpdate(query) {
   return request({
     url: '/deposit/depositActUpdate',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function depositActDelete(query) {
   return request({
     url: '/deposit/depositActDelete',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function depositContentAdd(query) {
   return request({
     url: '/deposit/depositContentAdd',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function depositContentUpdate(query) {
   return request({
     url: '/deposit/depositContentUpdate',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function depositContentDelete(query) {
   return request({
     url: '/deposit/depositContentDelete',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 

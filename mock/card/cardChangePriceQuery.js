@@ -9,20 +9,17 @@ for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
     StationNo: '0000000' + '@string("number", 1, 1)',
-    OptTime: '@datetime',
+    Mach_Time: '@datetime',
     Terminal: '@cname',
     OldPrice: '@float(20,30, 2, 2)',
     NewPrice: '@float(20,30, 2, 2)',
     OilCodeIndex: '@integer(0, 2)',
-    OilCode: function() {
+    oil_code: function() {
       return OilCodeArray[this.OilCodeIndex]
     },
-    OilName: function() {
+    oil_name: function() {
       return OilNameArray[this.OilCodeIndex]
-    },
-
-    QtySum: '@float(1000,20000, 2, 2)',
-    pageviews: '@integer(300, 5000)'
+    }
   }))
 }
 

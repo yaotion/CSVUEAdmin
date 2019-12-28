@@ -7,8 +7,8 @@ for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
     CardNo: '01000111100000' + '@string("number", 4, 4)',
-    MasterName: '@cname',
-    BeginTime: '@datetime',
+    HolderName: '@cname',
+    OptTime: '@datetime',
     pageviews: '@integer(300, 5000)'
   }))
 }

@@ -10,24 +10,24 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     StationNo: '0000000' + '@integer(1,9)',
 
-    OptNo: '0' + '@integer(1,9)',
+    Emp_No: '0' + '@integer(1,9)',
     OptName: '@cname',
 
     OilName: function() {
       return OilNameArray[this.RandID]
     },
-    OilCode: function() {
+    Oil_Code: function() {
       return OilCodeArray[this.RandID]
     },
-    BussDate: '@date',
-    ShiftNo: '@integer(1,3)',
-    TankNo: '@integer(1,9)',
-    AlarmType: '',
-    AlartStartTime: '@datetime',
-    AlartEndTime: '@datetime',
-    WaterHeight: '@float(20,200,2,2)',
-    OilHeight: '@float(20,200,2,2)',
-    Temp: '@float(2,40,2,2)',
+    Buss_Date: '@date',
+    Shift_No: '@integer(1,3)',
+    Tank_No: '@integer(1,9)',
+    Alarm_Type: '',
+    Start_Time: '@datetime',
+    End_Time: '@datetime',
+    Water_Height: '@float(20,200,2,2)',
+    Oil_Height: '@float(20,200,2,2)',
+    Oil_Temp: '@float(2,40,2,2)',
     OptTime: '@datetime'
   }))
 }

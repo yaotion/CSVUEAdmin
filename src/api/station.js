@@ -27,16 +27,16 @@ export function stationDayReportByTankQuery(query) {
     params: query
   })
 }
-export function stationDayReportByOptQuery(query) {
+export function stationDayReportByEmpQty(query) {
   return request({
-    url: '/station/stationDayReportByOptQuery',
+    url: '/station/stationDayReportByEmpQty',
     method: 'get',
     params: query
   })
 }
-export function stationDayReportByCashierQuery(query) {
+export function stationDayReportByEmpMoney(query) {
   return request({
-    url: '/station/stationDayReportByCashierQuery',
+    url: '/station/stationDayReportByEmpMoney',
     method: 'get',
     params: query
   })
@@ -47,7 +47,15 @@ export function stationTankAddQuery(query) {
     method: 'get',
     params: query
   })
-} export function stationOilChangeQuery(query) {
+}
+export function stationStationTanks(query) {
+  return request({
+    url: '/station/stationStationTanks',
+    method: 'get',
+    params: query
+  })
+}
+export function stationOilChangeQuery(query) {
   return request({
     url: '/station/stationOilChangeQuery',
     method: 'get',
@@ -74,9 +82,9 @@ export function stationOptLogQuery(query) {
     params: query
   })
 }
-export function stationTankStoreQuery(query) {
+export function stationTankShiftQuery(query) {
   return request({
-    url: '/station/stationTankStoreQuery',
+    url: '/station/stationTankShiftQuery',
     method: 'get',
     params: query
   })

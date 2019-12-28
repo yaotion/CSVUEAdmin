@@ -9,16 +9,16 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     Terminal: '00' + i,
     RandID: '@integer(0, 2)',
-    OilName: function() {
+    Oil_Name: function() {
       return OilNameArray[this.RandID]
     },
-    OilCode: function() {
+    Oil_Code: function() {
       return OilCodeArray[this.RandID]
     },
-    PumpStart: '@float(200,2000,2,2)',
-    PumpEnd: '@float(200,2000,2,2)',
-    Qtys: '@float(200,2000,2,2)',
-    Moneys: '@float(200,2000,2,2)',
+    Pump_Qty1: '@float(200,2000,2,2)',
+    Pump_Qty2: '@float(200,2000,2,2)',
+    Sum_Qty: '@float(200,2000,2,2)',
+    Sum_Money: '@float(200,2000,2,2)',
 
     pageviews: '@integer(300, 5000)'
   }))

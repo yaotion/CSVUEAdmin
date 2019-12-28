@@ -20,7 +20,7 @@ const List = [
 
 export default [
   {
-    url: '/payWay/payWayDetailListQuery',
+    url: '/PaywayInfo/payWayDetailListQuery',
     type: 'get',
     response: config => {
       return {
@@ -34,7 +34,7 @@ export default [
   },
 
   {
-    url: '/payWay/payWayAdd',
+    url: '/PaywayInfo/payWayAdd',
     type: 'post',
     response: _ => {
       return {
@@ -45,7 +45,7 @@ export default [
   },
 
   {
-    url: '/payWay/payWayUpdate',
+    url: '/PaywayInfo/payWayUpdate',
     type: 'post',
     response: _ => {
       return {
@@ -56,7 +56,7 @@ export default [
   },
 
   {
-    url: '/payWay/payWayDelete',
+    url: '/PaywayInfo/payWayDelete',
     type: 'post',
     response: _ => {
       return {

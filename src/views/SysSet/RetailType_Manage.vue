@@ -2,14 +2,8 @@
   <div class="app-container">
     <div class="filter-container">
 
-      <el-select v-model="listQuery.retailTypeID" placeholder="站点类型" clearable style="width: 150px" class="filter-item">
-        <el-option v-for="item in listRetailType" :key="item.retailTypeID" :label="item.retailTypeName" :value="item.retailTypeID" />
-      </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Refresh
-      </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleActAdd">
-        Add
       </el-button>
 
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleImport">
@@ -42,8 +36,23 @@
                 </div>
               </template>
             </el-table-column>
-            <el-table-column label="级别编号" prop="RetailTypeID" width="80" align="left" :resizable="false" />
-            <el-table-column label="级别名称" prop="RetailTypeName" align="left" :resizable="false" />
+
+            <el-table-column label="" prop="RetailTypeName" align="left" :resizable="false">
+              <template slot-scope="scope2">
+                <span>{{ scope2.row.RetailTypeID + "--" + scope2.row.RetailTypeName }}</span>
+              </template>
+              <template slot="header">
+                <div style="float:left;margin-left: 0px; padding-left:0px;color:blue;font-size:14px" class="filter-item">
+                  <span>散户级别</span>
+                </div>
+                <div style="float:right">
+                  <el-button class="filter-item" size="mini" style="margin-left: 10px;" type="text" icon="el-icon-edit" @click="handleActAdd()">
+                    添加级别
+                  </el-button>
+                </div>
+              </template>
+            </el-table-column>
+
           </el-table></el-col>
         <el-col :span="17">
           <el-table v-loading="listContentLoading" border :data="listContent" size="mini" fit highlight-current-row @selection-change="handleSelectionChange">
@@ -75,9 +84,9 @@
           </el-form-item>
         </el-form>
 
-        <el-form v-if="((dialogStatus==='set') || (dialogStatus==='setBat'))" ref="dataForm_Content" :rules="rulesContent" :model="temp" label-position="right" label-width="80px" style="width: 350px; margin-left:50px;">
+        <el-form v-if="((dialogStatus==='set') || (dialogStatus==='setBat'))" ref="dataForm_Content" :model="temp" label-position="right" label-width="80px" style="width: 350px; margin-left:50px;">
           <el-form-item label="用户类型" prop="RetailTypeID">
-            <el-select v-model="newRetailType.RetailTypeID" placeholder="请输入用户类型">
+            <el-select v-model="updatedCards.RetailTypeID" placeholder="请输入用户类型">
               <el-option
                 v-for="item in listRetailType"
                 :key="item.RetailTypeID"
@@ -88,22 +97,34 @@
           </el-form-item>
         </el-form>
         <el-form v-if="((dialogStatus==='export'))" ref="dataForm_Export" :rules="rulesContent" :model="temp" label-position="right" label-width="80px" style="width: 350px; margin-left:50px;">
-          <el-form-item label="用户类型" prop="RetailTypeID">
-            <el-select v-model="newRetailType.RetailTypeID" placeholder="请输入用户类型">
-              <el-option
-                v-for="item in listRetailType"
-                :key="item.RetailTypeID"
-                :label="item.RetailTypeName"
-                :value="item.RetailTypeID"
-              />
-            </el-select>
+          <el-row>
+            <el-col :span="16">
+              <el-form-item label="用户类型" prop="RetailTypeID">
+                <el-select v-model="updatedCards.RetailTypeID" placeholder="请输入用户类型">
+                  <el-option
+                    v-for="item in listRetailType"
+                    :key="item.RetailTypeID"
+                    :label="item.RetailTypeName"
+                    :value="item.RetailTypeID"
+                  />
+                </el-select>
+              </el-form-item>
+            </el-col>
 
-          </el-form-item>
-          <el-form-item label="用户类型" prop="RetailTypeID">
-            <el-upload ref="upload" action="/" :show-file-list="false" :on-change="importExcel2" :auto-upload="false">
-              <el-button size="small" type="primary">点击上传</el-button>
-            </el-upload>
-          </el-form-item>
+            <el-col :span="6" :offset="2">
+              <el-upload ref="upload" action="/" :show-file-list="false" :on-change="importExcel2" :auto-upload="false">
+                <el-button size="small" type="primary">选择文件</el-button>
+              </el-upload>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-table v-loading="listLoading" height="250" :data="updatedCards.CardList" border size="mini" fit highlight-current-row>
+                <el-table-column label="序号" type="index" align="left" :resizable="false" />
+                <el-table-column label="卡号" prop="CardNo" align="left" :resizable="false" />
+              </el-table>
+            </el-col>
+          </el-row>
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">
@@ -152,7 +173,7 @@ export default {
 
       listRetailType: null,
       listContent: null,
-
+      listUpload: null,
       listLoading: true,
       listContentLoading: false,
 
@@ -181,7 +202,10 @@ export default {
       temp: {
 
       },
-      newRetailType: {},
+      updatedCards: {
+        RetailTypeID: 0,
+        CardList: []
+      },
       multipleSelection: [],
       downloadLoading: false
     }
@@ -194,20 +218,28 @@ export default {
     this.getRetailTypeList()
   },
   methods: {
-    getList() {
+    getRetailTypeList() {
       this.listLoading = true
       retailTypeListQuery(this.listQuery).then(response => {
-        this.list = response.data.items
+        this.listRetailType = response.data.items
+        this.listRetailType.unshift({
+          RetailTypeID: 0,
+          RetailTypeName: '普通'
+        })
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
       })
     },
-    getRetailTypeList() {
+    getList() {
       this.listLoading = true
       retailTypeListQuery(this.listQuery).then(response => {
-        this.listRetailType = response.data.items
+        this.list = response.data.items
+        this.list.unshift({
+          RetailTypeID: 0,
+          RetailTypeName: '普通'
+        })
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
@@ -224,13 +256,22 @@ export default {
         }, 1.5 * 1000)
       })
     },
+    // 查看内容列表
     actClick(row, column, event) {
+      this.temp = Object.assign({}, row) // copy obj
       this.getContentList(row)
     },
+    // 刷新按钮事件
     handleFilter() {
       this.getList()
     },
-
+    // 重置数据
+    resetUpdateCards() {
+      this.updatedCards = {
+        RetailTypeID: 0,
+        CardList: []
+      }
+    },
     resetTemp() {
       this.temp = {
         index: 0,
@@ -242,6 +283,7 @@ export default {
         Enabled: ''
       }
     },
+    // 添加分类
     handleActAdd() {
       this.resetTemp()
       this.dialogStatus = 'add'
@@ -254,7 +296,7 @@ export default {
       this.$refs['dataForm_Act'].validate((valid) => {
         if (valid) {
           retailTypeAdd(this.temp).then(() => {
-            this.list.unshift(this.temp)
+            this.list.push(this.temp)
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -264,6 +306,22 @@ export default {
             })
           })
         }
+      })
+    },
+    // 修改分类
+    handleActUpdate(row) {
+      if (row.RetailTypeID === 0) {
+        this.$message({
+          type: 'info',
+          message: '系统类型不能修改'
+        })
+        return
+      }
+      this.temp = Object.assign({}, row) // copy obj
+      this.dialogStatus = 'update'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm_Act'].clearValidate()
       })
     },
     actUpdateData() {
@@ -288,79 +346,15 @@ export default {
         }
       })
     },
-    handleContentAdd() {
-
-    },
-    handleActUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-
-      this.dialogStatus = 'update'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm_Act'].clearValidate()
-      })
-    },
-    handleContentUpdate(row) {
-      this.temp = Object.assign({}, row) // copy obj
-      this.newRetailType = {}
-      this.dialogStatus = 'set'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm_Content'].clearValidate()
-      })
-    },
-    contentUpdateData() {
-      this.$refs['dataForm_Content'].validate((valid) => {
-        if (valid) {
-          var selectedRetailType
-          for (const s of this.listRetailType) {
-            if (s.RetailTypeID === this.temp.RetailTypeID) {
-              selectedRetailType = s
-              break
-            }
-          }
-          retailTypeSetUserCard(this.temp).then(() => {
-            for (const v of this.listContent) {
-              if (v.CardNo === this.temp.CardNo) {
-                var dx = Object.assign({}, v)
-                dx.RetailTypeID = selectedRetailType.RetailTypeID
-                dx.RetailTypeName = selectedRetailType.RetailTypeName
-                const index = this.listContent.indexOf(v)
-                this.listContent.splice(index, 1, dx)
-                break
-              }
-            }
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
-        }
-      })
-    },
-    confirmSave() {
-      if (this.dialogStatus === 'add') {
-        this.actAddData()
-        return
-      }
-      if (this.dialogStatus === 'update') {
-        this.actUpdateData()
-        return
-      }
-
-      if (this.dialogStatus === 'set') {
-        this.contentUpdateData()
-        return
-      }
-      if (this.dialogStatus === 'setBat') {
-        this.contentUpdateBatData()
-        return
-      }
-    },
+    // 删除分类
     handleActDelete(row) {
+      if (row.RetailTypeID === 0) {
+        this.$message({
+          type: 'info',
+          message: '系统类型不能删除'
+        })
+        return
+      }
       this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -386,18 +380,92 @@ export default {
         this.list.splice(index, 1)
       })
     },
-    handleImport() {
-      this.temp = {}
+    // 统一确认按钮事件
+    confirmSave() {
+      if (this.dialogStatus === 'add') {
+        this.actAddData()
+        return
+      }
+      if (this.dialogStatus === 'update') {
+        this.actUpdateData()
+        return
+      }
 
+      if (this.dialogStatus === 'set') {
+        this.contentUpdateData()
+        return
+      }
+      if (this.dialogStatus === 'setBat') {
+        this.contentUpdateBatData()
+        return
+      }
+      if (this.dialogStatus === 'export') {
+        this.exportCards()
+        return
+      }
+    },
+    // 单个修改内容
+    handleContentUpdate(row) {
+      this.resetUpdateCards()
+      this.updatedCards.RetailTypeID = row.RetailTypeID
+      this.updatedCards.CardList.push(
+        {
+          CardNo: row.CardNo
+        }
+      )
+      this.dialogStatus = 'set'
+      this.dialogFormVisible = true
+      this.$nextTick(() => {
+        this.$refs['dataForm_Content'].clearValidate()
+      })
+    },
+    contentUpdateData() {
+      retailTypeSetUserCard(this.updatedCards).then(() => {
+        this.getContentList(this.temp)
+        this.dialogFormVisible = false
+        this.$notify({
+          title: 'Success',
+          message: 'Update Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
+    // 导入内容
+    handleImport() {
+      this.resetUpdateCards()
       this.dialogStatus = 'export'
       this.dialogFormVisible = true
       this.$nextTick(() => {
         this.$refs['dataForm_Export'].clearValidate()
       })
     },
-    handleContentUpdateBat() {
-      this.temp = {}
-
+    importExcel2(file) {
+      ExcelToJson(file, this.importHandler)
+    },
+    importHandler(fileData) {
+      console.info(fileData)
+      this.updatedCards.CardList = fileData
+      console.info(this.updatedCards)
+    },
+    exportCards() {
+      retailTypeSetUserCard(this.updatedCards).then(() => {
+        this.getContentList(this.temp)
+        this.dialogFormVisible = false
+        this.$notify({
+          title: 'Success',
+          message: 'Created Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
+    },
+    // 批量修改内容
+    handleContentUpdateBat(row) {
+      this.resetUpdateCards()
+      this.updatedCards.RetailTypeID = this.temp.RetailTypeID
+      this.updatedCards.CardList = this.multipleSelection
+      console.info(this.updatedCards)
       this.dialogStatus = 'setBat'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -405,24 +473,16 @@ export default {
       })
     },
     contentUpdateBatData() {
-      var selectedRetailType
-      for (const s of this.listRetailType) {
-        if (s.RetailTypeID === this.newRetailType.RetailTypeID) {
-          selectedRetailType = s
-          break
-        }
-      }
-      for (const f of this.multipleSelection) {
-        for (const v of this.listContent) {
-          if (v.CardNo === f.CardNo) {
-            const index = this.listContent.indexOf(v)
-            v.RetailTypeID = selectedRetailType.RetailTypeID
-            v.RetailTypeName = selectedRetailType.RetailTypeName
-            this.listContent.splice(index, v)
-            break
-          }
-        }
-      }
+      retailTypeSetUserCard(this.updatedCards).then(() => {
+        this.getContentList(this.temp)
+        this.dialogFormVisible = false
+        this.$notify({
+          title: 'Success',
+          message: 'Update Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
       this.dialogFormVisible = false
       this.$notify({
         title: 'Success',
@@ -431,15 +491,11 @@ export default {
         duration: 2000
       })
     },
+    // 多选事件
     handleSelectionChange(val) {
       this.multipleSelection = val
-    },
-    importExcel2(file) {
-      ExcelToJson(file, this.importHandler)
-    },
-    importHandler(fileData) {
-      alert(fileData)
     }
+
   }
 }
 </script>

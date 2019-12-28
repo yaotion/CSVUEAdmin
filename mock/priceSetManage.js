@@ -7,7 +7,8 @@ const count = 10
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     PriceSetName: '测试策略' + i,
-    StartTime: '@datetime',
+    UseTime: '@datetime',
+    PriceUse: 1,
     PriceList: [
       {
         OilCode: '1020',

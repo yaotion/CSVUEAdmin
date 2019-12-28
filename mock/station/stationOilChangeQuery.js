@@ -10,24 +10,24 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     StationNo: '0000000' + '@integer(1,9)',
     RandID: '@integer(0, 2)',
-    OilName: function() {
+    Oil_Name: function() {
       return OilNameArray[this.RandID]
     },
-    OilCode: function() {
+    Oil_Code: function() {
       return OilCodeArray[this.RandID]
     },
-    OilShortName: function() {
+    OilBrief_name: function() {
       return OilShortNameArray[this.RandID]
     },
 
     // const filterVal = ['index', 'StationNo', 'BatID', 'OilCode',
     // 'OilName', 'OilShortName', 'Density', 'Price', 'UpdateTime']
 
-    BatID: '0001111111' + '@integer(1,9)',
+    TransOrder: '0001111111' + '@integer(1,9)',
 
     Density: '@float(0,1,2,2)',
     Price: '@float(5,10,2,2)',
-    UpdateTime: '@datetime',
+    ChangeTime: '@datetime',
     pageviews: '@integer(300, 5000)'
 
   }))

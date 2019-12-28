@@ -7,49 +7,50 @@ const count = 10
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
-    TankNo: '00' + i,
-    OptName: '@cname',
-    OptTime: '@datetime',
+    Tank_No: '00' + i,
+    Emp_Name: '@cname',
+    AddTime: '@datetime',
     RandID: '@integer(0, 2)',
-    OilName: function() {
+    Oil_Name: function() {
       return OilNameArray[this.RandID]
     },
-    OilCode: function() {
+    Oil_Code: function() {
       return OilCodeArray[this.RandID]
     },
-    StartHeight: '@float(200,2000,2,2)',
-    StartQty: '@float(200,2000,2,2)',
-    StartTemp: '@float(200,2000,2,2)',
-    StartDensity: '@float(200,2000,2,2)',
-    StartWeight: '@float(200,2000,2,2)',
-    EndHeight: '@float(200,2000,2,2)',
-    EndQty: '@float(200,2000,2,2)',
-    EndTemp: '@float(200,2000,2,2)',
-    EndDensity: '@float(200,2000,2,2)',
-    EndWeight: '@float(200,2000,2,2)',
+    Start_Oilh: '@float(200,2000,2,2)',
+    Start_Vol: '@float(200,2000,2,2)',
+    Start_Temp: '@float(200,2000,2,2)',
+    Start_Dens: '@float(200,2000,2,2)',
+    Start_Wt: '@float(200,2000,2,2)',
+    End_Oilh: '@float(200,2000,2,2)',
+    End_Vol: '@float(200,2000,2,2)',
+    End_Temp: '@float(200,2000,2,2)',
+    End_Dens: '@float(200,2000,2,2)',
+    End_Wt: '@float(200,2000,2,2)',
 
-    Qty: '@float(200,2000,2,2)',
-    Density: '@float(200,2000,2,2)',
-    Weight: '@float(200,2000,2,2)',
-    ZMQty: '@float(200,2000,2,2)',
-    ZMWeight: '@float(200,2000,2,2)',
+    Doc_Vol: '@float(200,2000,2,2)',
+    Doc_Dens: '@float(200,2000,2,2)',
+    Doc_Wt: '@float(200,2000,2,2)',
 
-    BillQty: '@float(200,2000,2,2)',
-    BillDensity: '@float(200,2000,2,2)',
-    BillWeight: '@float(200,2000,2,2)',
+    Acco_Vol: '@float(200,2000,2,2)',
+    Acco_Wt: '@float(200,2000,2,2)',
 
-    LossWeight: '@float(200,2000,2,2)',
+    Qty_Vol: '@float(200,2000,2,2)',
+    Qty_Dens: '@float(200,2000,2,2)',
+    Qty_Wt: '@float(200,2000,2,2)',
 
-    StartPump: '@float(200,2000,2,2)',
-    EndPump: '@float(200,2000,2,2)',
-    PumpDiff: '@float(200,2000,2,2)',
+    Loss_Wt: '@float(200,2000,2,2)',
+
+    Start_Pump: '@float(200,2000,2,2)',
+    End_Pump: '@float(200,2000,2,2)',
+    Diff_Pump: '@float(200,2000,2,2)',
     pageviews: '@integer(300, 5000)'
   }))
 }
 
 export default [
   {
-    url: '/station/stationTankStoreQuery',
+    url: '/station/stationTankShiftQuery',
     type: 'get',
     response: config => {
       const { begintime, endtime, page = 1, limit = 20, stationNo } = config.query

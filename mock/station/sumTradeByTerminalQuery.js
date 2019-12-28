@@ -8,8 +8,8 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     Terminal: '0' + '@integer(1, 9)' + '_1',
 
-    Qtys: '@float(200,2000,2,2)',
-    Moneys: '@float(200,2000,2,2)',
+    SumQty: '@float(200,2000,2,2)',
+    SumMoney: '@float(200,2000,2,2)',
     pageviews: '@integer(300, 5000)'
 
   }))

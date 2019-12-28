@@ -14,6 +14,13 @@ export function preIdListQuery(query) {
     params: query
   })
 }
+export function paywayListQuery(query) {
+  return request({
+    url: '/base/paywayListQuery',
+    method: 'get',
+    params: query
+  })
+}
 export function shiftListQuery(query) {
   return request({
     url: '/base/shiftListQuery',
@@ -47,19 +54,23 @@ export function tradeTypeListQuery(query) {
     method: 'get',
     params: query
   })
-} export function paywayListQuery(query) {
-  return request({
-    url: '/base/paywayListQuery',
-    method: 'get',
-    params: query
-  })
-} export function optListQuery(query) {
+}
+export function optListQuery(query) {
   return request({
     url: '/base/optListQuery',
     method: 'get',
     params: query
   })
-} export function cardListQuery(query) {
+}
+export function empListQuery(query) {
+  return request({
+    url: '/base/empListQuery',
+    method: 'get',
+    params: query
+  })
+}
+
+export function cardListQuery(query) {
   return request({
     url: '/base/cardListQuery',
     method: 'get',

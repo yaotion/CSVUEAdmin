@@ -11,7 +11,7 @@ function file2Xce(file) {
       })
       if (this.wb.SheetNames.length > 0) {
         const ws = this.wb.Sheets[this.wb.SheetNames[0]]
-        const result = XLSX.utils.sheet_to_json(ws)
+        const result = XLSX.utils.sheet_to_json(ws, { raw: true })
         console.info(result)
         resolve(result)
       }

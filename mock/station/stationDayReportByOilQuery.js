@@ -9,10 +9,10 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
 
     RandID: '@integer(0, 2)',
-    OilName: function() {
+    Oil_Name: function() {
       return OilNameArray[this.RandID]
     },
-    OilCode: function() {
+    Oil_Code: function() {
       return OilCodeArray[this.RandID]
     },
     Price: '@float(5,9,2,2)',

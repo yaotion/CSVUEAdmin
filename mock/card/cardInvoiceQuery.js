@@ -7,12 +7,11 @@ const sum = {}
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
-    CardNo: '01000111100000' + '@string("number", 4, 4)',
-    MasterName: '@cname',
+    ASN: '01000111100000' + '@string("number", 4, 4)',
+    HolderName: '@cname',
     Qty: '@float(10,30,2,2)',
-    Money: '@float(200,2000,2,2)',
-    MachTime: '@datetime',
-    Amt: '@float(200,2000,2,2)',
+    AMN: '@float(200,2000,2,2)',
+    Mach_Time: '@datetime',
     StationNo: '0000000' + '@string("number", 1, 1)',
     InvoiceType: '@integer(0,1)',
     InvoiceTypeName: function() {

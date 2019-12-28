@@ -474,22 +474,10 @@ export const constantRoutes = [
         meta: { title: '员工卡查询', icon: 'dashboard', affix: true }
       },
       {
-        path: 'StationZHTradeReportQuery',
-        component: () => import('@/views/station/Station_ZHTradeReport_Query'),
-        name: 'StationZHTradeReportQuery',
-        meta: { title: '加油综合报表', icon: 'dashboard', affix: true }
-      },
-      {
         path: 'StationEmpBillQuery',
         component: () => import('@/views/station/Station_EmpBill_Query'),
         name: 'StationEmpBillQuery',
         meta: { title: '员工卡对账单', icon: 'dashboard', affix: true }
-      },
-      {
-        path: 'StationGoodsTradeQuery',
-        component: () => import('@/views/station/Station_GoodsTrade_Query'),
-        name: 'StationGoodsTradeQuery',
-        meta: { title: '商品销售查询', icon: 'dashboard', affix: true }
       }
     ]
   },

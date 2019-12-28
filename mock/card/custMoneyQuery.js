@@ -13,8 +13,8 @@ for (let i = 0; i < count; i++) {
     AccBalance: '@float(200,2000,2,2)',
     CardAccBalance: '@float(200,2000,2,2)',
     CardBalance: '@float(200,2000,2,2)',
-    TradeMoney: '@float(200,2000,2,2)',
-    DeSaveMoney: '@float(200,2000,2,2)',
+    AccConsume: '@float(200,2000,2,2)',
+    AccCorrect: '@float(200,2000,2,2)',
     pageviews: '@integer(300, 5000)'
   }))
 }

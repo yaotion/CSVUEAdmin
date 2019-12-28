@@ -2,40 +2,34 @@
   <div class="app-container">
     <div class="filter-container">
 
-      <el-date-picker
-        v-model="listQuery.bussDate"
-        class="filter-item"
-        type="date"
-        clearable
-        style="width: 150px"
-        placeholder="商务日期"
-      />
+      <el-date-picker v-model="listQuery.bussDate" class="filter-item" type="date" clearable value-format="yyyy-MM-dd" style="width: 150px" placeholder="商务日期" @change="bussDateChange" />
       <el-select v-model="listQuery.shiftNo" placeholder="班号" clearable style="width: 100px" class="filter-item">
-        <el-option v-for="item in shiftList" :key="item.shiftNo" :label="item.shiftNo" :value="item.shiftNo" />
+        <el-option v-for="item in shiftList" :key="item.Shift_No" :label="item.Shift_No" :value="item.Shift_No" />
       </el-select>
 
-      <el-date-picker v-model="timespan" class="filter-item" type="datetimerange" align="right" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['12:00:00', '08:00:00']" />
+      <el-date-picker v-model="listQuery.begintime" class="filter-item" type="date" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="开始日期" default-time="00:00:00" />
+      <el-date-picker v-model="listQuery.endtime" class="filter-item" type="date" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="结束日期" default-time="23:59:00" />
 
-      <el-select v-model="listQuery.stationNo" placeholder="站点" clearable style="width: 120px" class="filter-item">
-        <el-option v-for="item in stationList" :key="item.stationno" :label="item.stationname" :value="item.stationno" />
+      <el-select v-model="listQuery.stationNo" placeholder="站点" clearable style="width: 120px" class="filter-item" @change="stationChange">
+        <el-option v-for="item in stationList" :key="item.stationNo" :label="item.stationname" :value="item.stationno" />
       </el-select>
       <el-select v-model="listQuery.oilCode" placeholder="油品" clearable style="width: 80px" class="filter-item">
-        <el-option v-for="item in oilList" :key="item.oilCode" :label="item.oilName" :value="item.oilCode" />
+        <el-option v-for="item in oilList" :key="item.OilCode" :label="item.OilName" :value="item.OilCode" />
       </el-select>
       <el-select v-model="listQuery.terminal" placeholder="枪号" clearable style="width: 80px" class="filter-item">
-        <el-option v-for="item in terminalList" :key="item.terminal" :label="item.terminalName" :value="item.terminal" />
+        <el-option v-for="item in terminalList" :key="item.Terminal" :label="item.Terminal" :value="item.Terminal" />
       </el-select>
       <el-select v-model="listQuery.tradeType" placeholder="交易类型" clearable style="width: 120px" class="filter-item">
-        <el-option v-for="item in tradeTypeList" :key="item.tradeType" :label="item.tradeTypeName" :value="item.tradeType" />
+        <el-option v-for="item in tradeTypeList" :key="item.TradeType" :label="item.TradeTypeName" :value="item.TradeType" />
       </el-select>
       <el-select v-model="listQuery.cardType" placeholder="卡类型" clearable style="width: 120px" class="filter-item">
-        <el-option v-for="item in cardTypeList" :key="item.cardType" :label="item.cardTypeName" :value="item.cardType" />
+        <el-option v-for="item in cardTypeList" :key="item.CardType" :label="item.CardTypeName" :value="item.CardType" />
       </el-select>
       <el-select v-model="listQuery.payway" placeholder="结算方式" clearable style="width: 120px" class="filter-item">
-        <el-option v-for="item in paywayList" :key="item.payway" :label="item.paywayName" :value="item.payway" />
+        <el-option v-for="item in paywayList" :key="item.Pay_Way" :label="item.Way_Name" :value="item.Pay_Way" />
       </el-select>
-      <el-select v-model="listQuery.optNo" placeholder="操作员" clearable style="width: 120px" class="filter-item">
-        <el-option v-for="item in optList" :key="item.optNo" :label="item.optName" :value="item.optNo" />
+      <el-select v-model="listQuery.empNo" placeholder="操作员" clearable style="width: 120px" class="filter-item">
+        <el-option v-for="item in optList" :key="item.Emp_No" :label="item.Emp_Name" :value="item.Emp_No" />
       </el-select>
       <el-select
         v-model="listQuery.cardNo"
@@ -61,6 +55,7 @@
       <el-tab-pane label="加油交易明细" name="first">
         <div>
           <el-table
+            id="tabData"
             :key="tableKey1"
             v-loading="listLoading"
             :data="list"
@@ -72,25 +67,21 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="商务日期" prop="BussDate" align="center" width="90" />
-            <el-table-column label="班号" prop="ShiftNo" align="center" width="50" />
+            <el-table-column label="序号" type="index" align="center" width="60" />
+            <el-table-column label="商务日期" prop="Buss_Date" align="center" width="90" />
+            <el-table-column label="班号" prop="Shift_No" align="center" width="50" />
             <el-table-column label="逻辑枪号" prop="Terminal" align="center" width="80" />
-            <el-table-column label="油品名称" prop="OilName" align="center" width="100" />
+            <el-table-column label="油品名称" prop="Oil_Name" align="center" width="100" />
             <el-table-column label="单价" prop="Price" align="center" width="50" />
             <el-table-column label="加油量" prop="Qty" align="center" width="80" />
             <el-table-column label="加油金额" prop="Money" align="center" width="100" />
-            <el-table-column label="加油原额" prop="MoneySale" align="center" width="100" />
+            <el-table-column label="加油原额" prop="Money_Sale" align="center" width="100" />
             <el-table-column label="卡余额" prop="Bal" align="center" width="80" />
-            <el-table-column label="交易方式" prop="TradeTypeName" align="center" width="80" />
-            <el-table-column label="结算方式" prop="PayWayName" align="center" width="80" />
-            <el-table-column label="员工号" prop="OptNo" align="center" width="80" />
-            <el-table-column label="员工姓名" prop="OptName" align="center" width="100" />
-            <el-table-column label="加油时间" prop="MachTime" align="center" width="140" />
+            <el-table-column label="交易方式" prop="TradeType" align="center" width="80" />
+            <el-table-column label="结算方式" prop="Way_Name" align="center" width="80" />
+            <el-table-column label="员工号" prop="Emp_No" align="center" width="80" />
+            <el-table-column label="员工姓名" prop="Emp_Name" align="center" width="100" />
+            <el-table-column label="加油时间" prop="Mach_Time" align="center" width="140" />
             <el-table-column label="账户名称" prop="AccName" align="center" width="160" />
           </el-table>
         </div>
@@ -98,6 +89,7 @@
       <el-tab-pane label="按交易类型统计" name="second">
         <div>
           <el-table
+            id="tabData2"
             :key="tableKey2"
             v-loading="listLoading"
             :data="listByTradeType"
@@ -108,22 +100,19 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column label="序号" type="index" align="center" width="60" />
 
             <el-table-column label="交易类型" prop="TradeTypeName" align="center" width="100" />
 
-            <el-table-column label="营业量" prop="Qtys" align="center" width="100" />
-            <el-table-column label="营业额" prop="Moneys" align="center" width="100" />
+            <el-table-column label="营业量" prop="SumQty" align="center" width="100" />
+            <el-table-column label="营业额" prop="SumMoney" align="center" width="100" />
           </el-table>
         </div>
       </el-tab-pane>
       <el-tab-pane label="按卡号统计" name="third">
         <div>
           <el-table
+            id="tabData3"
             :key="tableKey3"
             v-loading="listLoading"
             :data="listByCard"
@@ -134,14 +123,10 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="卡号" prop="CardNo" align="center" width="200" />
-            <el-table-column label="营业量" prop="Qtys" align="center" width="100" />
-            <el-table-column label="营业额" prop="Moneys" align="center" width="100" />
+            <el-table-column label="序号" type="index" align="center" width="60" />
+            <el-table-column label="卡号" prop="Card_no" align="center" width="200" />
+            <el-table-column label="营业量" prop="SumQty" align="center" width="100" />
+            <el-table-column label="营业额" prop="SumMoney" align="center" width="100" />
             <el-table-column label="账户名称" prop="AccName" align="center" width="300" />
           </el-table>
         </div>
@@ -149,6 +134,7 @@
       <el-tab-pane label="按卡类型统计" name="four">
         <div>
           <el-table
+            id="tabData4"
             :key="tableKey4"
             v-loading="listLoading"
             :data="listByCardType"
@@ -159,20 +145,17 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column label="序号" type="index" align="center" width="60" />
             <el-table-column label="卡类型" prop="CardTypeName" align="center" width="100" />
-            <el-table-column label="营业量" prop="Qtys" align="center" width="100" />
-            <el-table-column label="营业额" prop="Moneys" align="center" width="100" />
+            <el-table-column label="营业量" prop="SumQty" align="center" width="100" />
+            <el-table-column label="营业额" prop="SumMoney" align="center" width="100" />
           </el-table>
         </div>
       </el-tab-pane>
       <el-tab-pane label="按操作员统计" name="five">
         <div>
           <el-table
+            id="tabData5"
             :key="tableKey4"
             v-loading="listLoading"
             :data="listByOpt"
@@ -183,20 +166,17 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="员工号" prop="OptName" align="center" width="100" />
-            <el-table-column label="营业量" prop="Qtys" align="center" width="100" />
-            <el-table-column label="营业额" prop="Moneys" align="center" width="100" />
+            <el-table-column label="序号" type="index" align="center" width="60" />
+            <el-table-column label="员工号" prop="Emp_No" align="center" width="100" />
+            <el-table-column label="营业量" prop="SumQty" align="center" width="100" />
+            <el-table-column label="营业额" prop="SumMoney" align="center" width="100" />
           </el-table>
         </div>
       </el-tab-pane>
       <el-tab-pane label="按油品统计" name="six">
         <div>
           <el-table
+            id="tabData6"
             :key="tableKey4"
             v-loading="listLoading"
             :data="listByOil"
@@ -207,21 +187,18 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="油品编号" prop="OilCode" align="center" width="100" />
-            <el-table-column label="油品名称" prop="OilName" align="center" width="100" />
-            <el-table-column label="营业量" prop="Qtys" align="center" width="100" />
-            <el-table-column label="营业额" prop="Moneys" align="center" width="100" />
+            <el-table-column label="序号" type="index" align="center" width="60" />
+            <el-table-column label="油品编号" prop="Oil_Code" align="center" width="100" />
+            <el-table-column label="油品名称" prop="Oil_Name" align="center" width="100" />
+            <el-table-column label="营业量" prop="SumQty" align="center" width="100" />
+            <el-table-column label="营业额" prop="SumMoney" align="center" width="100" />
           </el-table>
         </div>
       </el-tab-pane>
       <el-tab-pane label="按油枪统计" name="seven">
         <div>
           <el-table
+            id="tabData7"
             :key="tableKey4"
             v-loading="listLoading"
             :data="listByTerminal"
@@ -232,14 +209,10 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column label="序号" type="index" align="center" width="60" />
             <el-table-column label="油枪号" prop="Terminal" align="center" width="100" />
-            <el-table-column label="营业量" prop="Qtys" align="center" width="100" />
-            <el-table-column label="营业额" prop="Moneys" align="center" width="100" />
+            <el-table-column label="营业量" prop="SumQty" align="center" width="100" />
+            <el-table-column label="营业额" prop="SumMoney" align="center" width="100" />
           </el-table>
         </div>
       </el-tab-pane>
@@ -247,6 +220,7 @@
       <el-tab-pane label="按支付方式统计" name="eight">
         <div>
           <el-table
+            id="tabData8"
             :key="tableKey4"
             v-loading="listLoading"
             :data="listByPayWay"
@@ -257,14 +231,10 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="支付方式" prop="PayWayName" align="center" width="100" />
-            <el-table-column label="营业量" prop="Qtys" align="center" width="100" />
-            <el-table-column label="营业额" prop="Moneys" align="center" width="100" />
+            <el-table-column label="序号" type="index" align="center" width="60" />
+            <el-table-column label="支付方式" prop="Way_Name" align="center" width="100" />
+            <el-table-column label="营业量" prop="SumQty" align="center" width="100" />
+            <el-table-column label="营业额" prop="SumMoney" align="center" width="100" />
           </el-table>
         </div>
       </el-tab-pane>
@@ -290,11 +260,12 @@
  }
 </style>
 <script>
-import { stationListQuery, shiftListQuery, oilCodeListQuery, terminalListQuery, tradeTypeListQuery, cardTypeListQuery, paywayListQuery, optListQuery } from '@/api/base'
+import { stationListQuery, shiftListQuery, oilCodeListQuery, terminalListQuery, tradeTypeListQuery, cardTypeListQuery, paywayListQuery, empListQuery } from '@/api/base'
 import { stationTradeListQuery, sumTradeByTradeTypeQuery, sumTradeByCardQuery, sumTradeByCardTypeQuery,
   sumTradeByOptQuery, sumTradeByOilQuery, sumTradeByTerminalQuery, sumTradeByPayWayQuery } from '@/api/station'
 import { cardFuzzySearch } from '@/api/card'
 import { Message } from 'element-ui'
+import { tableToExcel } from '@/utils/excelUtils'
 // import printJS from 'print-js'
 import waves from '@/directive/waves' // waves directive
 
@@ -336,19 +307,17 @@ export default {
       cardList: null,
       timespan: null,
       listQuery: {
-        page: 1,
-        limit: 20,
         bussDate: '2019-08-10',
         oilCode: '',
         begintime: '',
         endtime: '',
         shiftNo: '',
-        stationno: '',
+        stationNo: '',
         terminal: '',
-        tradeType: '',
+        tradeType: -1,
         cardType: '',
-        payway: '',
-        optNo: '',
+        payway: -1,
+        empNo: '',
         cardNo: '',
         sysTrade: false
       },
@@ -370,17 +339,15 @@ export default {
     this.getList()
   },
   methods: {
-    getBegintime() {
-      if (this.timespan && this.timespan[0]) {
-        return this.timespan[0].toString()
-      }
-      return null
+    stationChange() {
+      this.getShiftList()
+      this.getOptList()
+      this.getTerminalList()
+      this.getShiftList()
+      this.getOilList()
     },
-    getEndtime() {
-      if (this.timespan && this.timespan[1]) {
-        return this.timespan[1].toString()
-      }
-      return null
+    bussDateChange() {
+      this.getShiftList()
     },
     getStationList() {
       this.listLoading = true
@@ -428,6 +395,10 @@ export default {
       this.listLoading = true
       tradeTypeListQuery(this.listQuery).then(response => {
         this.tradeTypeList = response.data.items
+        this.tradeTypeList.unshift({
+          TradeType: -1,
+          TradeTypeName: '全部交易'
+        })
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
@@ -448,6 +419,10 @@ export default {
       this.listLoading = true
       paywayListQuery(this.listQuery).then(response => {
         this.paywayList = response.data.items
+        this.paywayList.unshift({
+          Pay_Way: -1,
+          Way_Name: '全部支付'
+        })
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
@@ -456,7 +431,7 @@ export default {
     },
     getOptList() {
       this.listLoading = true
-      optListQuery(this.listQuery).then(response => {
+      empListQuery(this.listQuery).then(response => {
         this.optList = response.data.items
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -663,7 +638,6 @@ export default {
       this.getSumTradeByPayWay()
     },
     handleFilter() {
-      this.listQuery.page = 1
       if (this.listQuery.bussDate === '' || this.listQuery.bussDate === null) {
         Message.error('请输入商务日起或者加油时段')
         return
@@ -672,23 +646,44 @@ export default {
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['序号', '发卡点', '操作员', '操作员编号', '时间', '卡号', '种类', '数量']
-        const filterVal = ['index', 'StationNo', 'OptName', 'OptNo', 'OptTime', 'CardNo', 'CardTypeName', 'CardCount']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '油站日报查询'
-        })
-        this.downloadLoading = false
-      })
-    },
+      var tableName = '#tabData'
+      var fileName = '加油交易明细'
 
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        return v[j]
-      }))
+      if (this.activeName === 'second') {
+        tableName = '#tabData2'
+        fileName = '按交易类型统计'
+      }
+      if (this.activeName === 'third') {
+        tableName = '#tabData3'
+        fileName = '按卡号统计'
+      }
+      if (this.activeName === 'four') {
+        tableName = '#tabData4'
+        fileName = '按卡类型统计'
+      }
+      if (this.activeName === 'five') {
+        tableName = '#tabData5'
+        fileName = '按操作员统计'
+      }
+      if (this.activeName === 'six') {
+        tableName = '#tabData6'
+        fileName = '按油品统计'
+      }
+      if (this.activeName === 'seven') {
+        tableName = '#tabData7'
+        fileName = '按油枪统计'
+      }
+      if (this.activeName === 'eight') {
+        tableName = '#tabData8'
+        fileName = '按支付方式统计'
+      }
+      var dataTmp = document.querySelector(tableName)
+
+      try {
+        tableToExcel(dataTmp, fileName)
+      } finally {
+        this.downloadLoading = false
+      }
     }
   }
 }

@@ -20,8 +20,8 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="结算方式编号" prop="PayWay" align="center" width="100" />
-        <el-table-column label="结算方式名称" prop="PayWayName" align="center" width="200" />
+        <el-table-column label="结算方式编号" prop="Pay_way" align="center" width="100" />
+        <el-table-column label="结算方式名称" prop="Way_name" align="center" width="200" />
 
         <el-table-column v-if="notExporting" label="操作" align="center" width="230" class-name="small-padding fixed-width">
           <template slot-scope="{row}">
@@ -38,12 +38,12 @@
 
       <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible" width="450px">
         <el-form ref="dataForm" :rules="rules" :model="temp" label-position="right" label-width="120px" style="width: 300px; margin-left:50px;">
-          <el-form-item label="结算方式编号" prop="PayWay">
-            <el-input v-model.number="temp.PayWay" type="number" :disabled="dialogStatus!=='create'" />
+          <el-form-item label="结算方式编号" prop="Pay_way">
+            <el-input v-model.number="temp.Pay_way" type="number" :disabled="dialogStatus!=='create'" />
           </el-form-item>
 
-          <el-form-item label="结算方式名称" prop="PayWayName">
-            <el-input v-model="temp.PayWayName" />
+          <el-form-item label="结算方式名称" prop="Way_name">
+            <el-input v-model="temp.Way_name" />
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">
@@ -134,8 +134,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           payWayAdd(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            console.info(this.temp)
+            this.handleFilter()
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -160,13 +159,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           payWayUpdate(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.StationNo === this.temp.StationNo) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
-                break
-              }
-            }
+            this.handleFilter()
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',

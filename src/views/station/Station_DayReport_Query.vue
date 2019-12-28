@@ -6,7 +6,8 @@
         <el-option v-for="item in stationList" :key="item.stationno" :label="item.stationname" :value="item.stationno" />
       </el-select>
 
-      <el-date-picker v-model="timespan" class="filter-item" type="datetimerange" align="right" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['12:00:00', '08:00:00']" />
+      <el-date-picker v-model="listQuery.begintime" class="filter-item" type="date" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="开始日期" default-time="00:00:00" />
+      <el-date-picker v-model="listQuery.endtime" class="filter-item" type="date" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="结束日期" default-time="23:59:00" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -18,6 +19,7 @@
       <el-tab-pane label="按油枪统计" name="first">
         <div>
           <el-table
+            id="tabData1"
             :key="tableKey1"
             v-loading="listLoading"
             :data="listByTerminal"
@@ -28,24 +30,21 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column label="序号" type="index" align="center" width="60" />
             <el-table-column label="枪号" prop="Terminal" align="center" width="90" />
-            <el-table-column label="油品名称" prop="OilName" align="center" width="90" />
-            <el-table-column label="油品编号" prop="OilCode" align="center" width="100" />
-            <el-table-column label="起始累计数" prop="PumpStart" align="center" width="180" />
-            <el-table-column label="截止累计数" prop="PumpEnd" align="center" width="180" />
-            <el-table-column label="营业数量" prop="Qtys" align="center" width="115" />
-            <el-table-column label="营业金额" prop="Moneys" align="center" width="115" />
+            <el-table-column label="油品名称" prop="Oil_Name" align="center" width="90" />
+            <el-table-column label="油品编号" prop="Oil_Code" align="center" width="100" />
+            <el-table-column label="起始累计数" prop="Pump_Qty1" align="center" width="180" />
+            <el-table-column label="截止累计数" prop="Pump_Qty2" align="center" width="180" />
+            <el-table-column label="营业数量" prop="Sum_Qty" align="center" width="115" />
+            <el-table-column label="营业金额" prop="Sum_Money" align="center" width="115" />
           </el-table>
         </div>
       </el-tab-pane>
       <el-tab-pane label="按油品统计" name="second">
         <div>
           <el-table
+            id="tabData2"
             :key="tableKey2"
             v-loading="listLoading"
             :data="listByOil"
@@ -57,14 +56,10 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
+            <el-table-column label="序号" type="index" align="center" width="60" />
 
-            <el-table-column label="油品名称" prop="OilName" align="center" width="80" />
-            <el-table-column label="油品编号" prop="OilCode" align="center" width="80" />
+            <el-table-column label="油品名称" prop="Oil_Name" align="center" width="80" />
+            <el-table-column label="油品编号" prop="Oil_Code" align="center" width="80" />
             <el-table-column label="单价" prop="Price" align="center" width="80" />
             <el-table-column label="试机油量" prop="SJQtys" align="center" width="80" />
             <el-table-column label="试机金额" prop="SJMoneys" align="center" width="80" />
@@ -94,6 +89,7 @@
       <el-tab-pane label="按罐进销存统计" name="third">
         <div>
           <el-table
+            id="tabData3"
             :key="tableKey3"
             v-loading="listLoading"
             :data="listByTank"
@@ -105,26 +101,22 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
-            <el-table-column label="油罐" prop="TankNo" align="center" width="80" />
-            <el-table-column label="油品名称" prop="OilName" align="center" width="100" />
-            <el-table-column label="油品编号" prop="OilCode" align="center" width="100" />
-
-            <el-table-column label="起始存量" prop="StartQty" align="center" width="100" />
-            <el-table-column label="添油量" prop="AddQty" align="center" width="100" />
-            <el-table-column label="发油量" prop="TradeQty" align="center" width="100" />
-            <el-table-column label="截止存量" prop="EndQty" align="center" width="100" />
-            <el-table-column label="损耗量" prop="DiffQty" align="center" width="100" />
+            <el-table-column label="序号" type="index" align="center" width="60" />
+            <el-table-column label="油罐" prop="Tank_No" align="center" width="80" />
+            <el-table-column label="油品名称" prop="Oil_Name" align="center" width="100" />
+            <el-table-column label="油品编号" prop="Oil_Code" align="center" width="100" />
+            <el-table-column label="起始存量" prop="Start_li" align="center" width="100" />
+            <el-table-column label="添油量" prop="Add_li" align="center" width="100" />
+            <el-table-column label="发油量" prop="Sale_li" align="center" width="100" />
+            <el-table-column label="截止存量" prop="End_li" align="center" width="100" />
+            <el-table-column label="损耗量" prop="Lost_li" align="center" width="100" />
 
           </el-table>
         </div></el-tab-pane>
       <el-tab-pane label="按加油员加油量统计" name="fourth">
         <div>
           <el-table
+            id="tabData4"
             :key="tableKey4"
             v-loading="listLoading"
             :data="listByOpt"
@@ -135,23 +127,18 @@
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="油品名称" prop="OilName" align="center" width="100" />
-            <el-table-column label="油品编号" prop="OilCode" align="center" width="100" />
-            <el-table-column label="操作员" prop="OptNo" align="center" width="80" />
-            <el-table-column label="操作姓名" prop="OptName" align="center" width="80" />
-            <el-table-column label="加油量" prop="Qtys" align="center" width="100" />
+            <el-table-column label="序号" type="index" align="center" width="60" />
+            <el-table-column label="油站编号" prop="StationNo" align="center" width="100" />
+            <el-table-column label="操作员" prop="Emp_No" align="center" width="100" />
+            <el-table-column label="操作姓名" prop="Emp_Name" align="center" width="100" />
+            <el-table-column label="加油量" prop="Sum_Qty" align="center" width="120" />
           </el-table>
         </div>
       </el-tab-pane>
       <el-tab-pane label="按收款员收款金额统计" name="five">
         <div>
           <el-table
+            id="tabData5"
             :key="tableKey5"
             v-loading="listLoading"
             :data="listByCashier"
@@ -159,18 +146,15 @@
             :summary-method="getSummaries5"
             border
             fit
+            size="mini"
             highlight-current-row
             style="width: 100%;"
           >
-            <el-table-column label="序号" prop="index" align="center" width="60">
-              <template slot-scope="scope">
-                <span>{{ scope.row.index }}</span>
-              </template>
-            </el-table-column>
-
-            <el-table-column label="油品名称" prop="OilName" align="center" width="100" />
-            <el-table-column label="油品编号" prop="OilCode" align="center" width="100" />
-            <el-table-column label="收款员编号" prop="CashierNo" align="center" width="100" />
+            <el-table-column label="序号" type="index" align="center" width="60" />
+            <el-table-column label="油站编号" prop="StationNo" align="center" width="100" />
+            <el-table-column label="油品名称" prop="Oil_Name" align="center" width="100" />
+            <el-table-column label="油品编号" prop="Oil_Code" align="center" width="100" />
+            <el-table-column label="收款员编号" prop="Emp_No" align="center" width="100" />
             <el-table-column label="现金金额" prop="XJMoneys" align="center" width="100" />
             <el-table-column label="邮票金额" prop="YPMoneys" align="center" width="100" />
             <el-table-column label="银行卡金额" prop="YHKMoneys" align="center" width="100" />
@@ -181,8 +165,6 @@
         </div>
       </el-tab-pane>
     </el-tabs>
-
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 <style >
@@ -204,18 +186,17 @@
  }
 </style>
 <script>
-import { cardInoutQuery } from '@/api/card'
 import { stationListQuery } from '@/api/base'
 import { stationDayReportByTerminalQuery, stationDayReportByOilQuery,
-  stationDayReportByTankQuery, stationDayReportByOptQuery, stationDayReportByCashierQuery
+  stationDayReportByTankQuery, stationDayReportByEmpQty, stationDayReportByEmpMoney
 } from '@/api/station'
 
 // import printJS from 'print-js'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { tableToExcel } from '@/utils/excelUtils'
 export default {
   name: 'StationDayReportQuery',
-  components: { Pagination },
+  components: { },
   directives: { waves },
   filters: {
   },
@@ -238,11 +219,9 @@ export default {
       stationList: null,
       timespan: null,
       listQuery: {
-        page: 1,
-        limit: 20,
         begintime: '',
         endtime: '',
-        stationno: ''
+        stationNo: ''
       },
       downloadLoading: false
     }
@@ -251,26 +230,10 @@ export default {
 
   },
   created() {
-    this.getStationList()
-    this.getDayReportByTerminal()
-    this.getDayReportByOil()
-    this.getDayReportByTank()
-    this.getDayReportByOpt()
-    this.getDayReportByCashier()
+    this.getList()
   },
   methods: {
-    getBegintime() {
-      if (this.timespan && this.timespan[0]) {
-        return this.timespan[0].toString()
-      }
-      return null
-    },
-    getEndtime() {
-      if (this.timespan && this.timespan[1]) {
-        return this.timespan[1].toString()
-      }
-      return null
-    },
+
     getStationList() {
       this.listLoading = true
       stationListQuery(this.listQuery).then(response => {
@@ -314,7 +277,7 @@ export default {
     },
     getDayReportByOpt() {
       this.listLoading = true
-      stationDayReportByOptQuery(this.listQuery).then(response => {
+      stationDayReportByEmpQty(this.listQuery).then(response => {
         this.listByOpt = response.data.items
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -324,7 +287,7 @@ export default {
     },
     getDayReportByCashier() {
       this.listLoading = true
-      stationDayReportByCashierQuery(this.listQuery).then(response => {
+      stationDayReportByEmpMoney(this.listQuery).then(response => {
         this.listByCashier = response.data.items
         // Just to simulate the time of the request
         setTimeout(() => {
@@ -334,17 +297,12 @@ export default {
     },
 
     getList() {
-      this.listLoading = true
-      this.listQuery.begintime = this.getBegintime()
-      this.listQuery.endtime = this.getEndtime()
-      cardInoutQuery(this.listQuery).then(response => {
-        this.list = response.data.items
-        this.total = response.data.total
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      })
+      this.getStationList()
+      this.getDayReportByTerminal()
+      this.getDayReportByOil()
+      this.getDayReportByTank()
+      this.getDayReportByOpt()
+      this.getDayReportByCashier()
     },
     getSummaries1(param) {
       const { columns, data } = param
@@ -492,28 +450,39 @@ export default {
       return sums
     },
     handleFilter() {
-      this.listQuery.page = 1
-      // this.getList()
+      this.getList()
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['序号', '发卡点', '操作员', '操作员编号', '时间', '卡号', '种类', '数量']
-        const filterVal = ['index', 'StationNo', 'OptName', 'OptNo', 'OptTime', 'CardNo', 'CardTypeName', 'CardCount']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '油站日报查询'
-        })
-        this.downloadLoading = false
-      })
-    },
+      var tableName = '#tabData1'
+      var fileName = '加油报表按油枪统计'
+      if (this.activeName === 'first') {
+        tableName = '#tabData1'
+        fileName = '加油报表按油枪统计'
+      }
+      if (this.activeName === 'second') {
+        tableName = '#tabData2'
+        fileName = '加油报表按油拼统计'
+      }
+      if (this.activeName === 'third') {
+        tableName = '#tabData3'
+        fileName = '加油报表按油罐统计'
+      }
+      if (this.activeName === 'fourth') {
+        tableName = '#tabData1'
+        fileName = '加油报表按员工加油量统计'
+      }
+      if (this.activeName === 'fiveth') {
+        tableName = '#tabData1'
+        fileName = '加油报表按员工加油金额统计'
+      }
+      var dataTmp = document.querySelector(tableName)
 
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        return v[j]
-      }))
+      try {
+        tableToExcel(dataTmp, fileName)
+      } finally {
+        this.downloadLoading = false
+      }
     }
   }
 }

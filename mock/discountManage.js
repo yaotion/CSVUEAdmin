@@ -9,8 +9,8 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     ActID: '000' + i,
     ActName: '@ctitle(8)',
-    StartTM: '@datetime',
-    EndTM: '@datetime',
+    ActStartTime: '@datetime',
+    ActEndTime: '@datetime',
     Enabled: true
   }))
 }

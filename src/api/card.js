@@ -263,9 +263,9 @@ export function cardPreQuery(query) {
     params: query
   })
 }
-export function cardMZMKuery(query) {
+export function cardMZMKQuery(query) {
   return request({
-    url: '/card/cardMZMKuery',
+    url: '/card/cardMZMKQuery',
     method: 'get',
     params: query
   })
@@ -273,6 +273,13 @@ export function cardMZMKuery(query) {
 export function cardChangePriceQuery(query) {
   return request({
     url: '/card/cardChangePriceQuery',
+    method: 'get',
+    params: query
+  })
+}
+export function cardStationRecTime(query) {
+  return request({
+    url: '/card/cardStationRecTime',
     method: 'get',
     params: query
   })
@@ -358,3 +365,10 @@ export function cardInvoiceQuery(query) {
   })
 }
 
+export function reportSaleSectionQuery(query) {
+  return request({
+    url: '/card/reportSaleSectionQuery',
+    method: 'get',
+    params: query
+  })
+}

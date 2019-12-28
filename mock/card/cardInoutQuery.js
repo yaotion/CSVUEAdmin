@@ -1,6 +1,6 @@
 import Mock from 'mockjs'
 const List = []
-const CardTypeNameArray = ['员工卡', '客户卡']
+const KindNameArray = ['领用', '退领', '损坏', '修复', '白卡入库', '白卡出库']
 const count = 100
 
 for (let i = 0; i < count; i++) {
@@ -10,13 +10,13 @@ for (let i = 0; i < count; i++) {
     StationName: '@cname',
     OptName: '@cname',
     OptNo: '@string("number", 4, 4)',
-    InOutDate: '@datetime',
+    OptTime: '@datetime',
     CardNo: '01000111100000' + '@string("number", 4, 4)',
-    CardType: '@integer(0, 1)',
-    CardTypeName: function() {
-      return CardTypeNameArray[this.CardType]
+    KindID: '@integer(0, 5)',
+    Kind: function() {
+      return KindNameArray[this.KindID]
     },
-    CardCount: '@integer(1, 5)',
+    Number: '@integer(1, 5)',
     pageviews: '@integer(300, 5000)'
   }))
 }

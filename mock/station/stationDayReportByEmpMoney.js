@@ -1,31 +1,42 @@
 import Mock from 'mockjs'
-
 const List = []
-const PreTypeNameArray = ['实时优惠', '返还优惠']
-const count = 100
+const OilCodeArray = ['1020', '1040', '2001']
+const OilNameArray = ['92#', '95#', '0#']
+const count = 10
 
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
-    CardNo: '01000111100000' + '@string("number", 4, 4)',
-    MasterName: '@cname',
-    Qty: '@float(20,30, 4, 4)',
-    Money: '@float(200,300, 4, 4)',
-    PreMoney: '@float(10,40, 4, 4)',
-    PreType: '@integer(0, 1)',
-    PreTypeName: function() {
-      return PreTypeNameArray[this.PreType]
-    },
-    MachTime: '@datetime',
 
-    StationNo: '0000000' + '@string("number", 1, 1)',
+    RandID: '@integer(0, 2)',
+    OilName: function() {
+      return OilNameArray[this.RandID]
+    },
+    OilCode: function() {
+      return OilCodeArray[this.RandID]
+    },
+    CashierNo: '000' + '@integer(1,1)',
+
+    XJMoneys: '@float(200,2000,2,2)',
+    YPMoneys: '@float(200,2000,2,2)',
+    YHKMoneys: '@float(200,2000,2,2)',
+    XYKMoneys: '@float(200,2000,2,2)',
+    JZMoneys: '@float(200,2000,2,2)',
+    QTMoneys: '@float(200,2000,2,2)',
+    QT1Moneys: '@float(200,2000,2,2)',
+    WXMoneys: '@float(200,2000,2,2)',
+
+    ZFBMoneys: '@float(200,2000,2,2)',
+
+    YLMoneys: '@float(200,2000,2,2)',
     pageviews: '@integer(300, 5000)'
+
   }))
 }
 
 export default [
   {
-    url: '/card/cardMZMKuery',
+    url: '/station/stationDayReportByEmpMoney',
     type: 'get',
     response: config => {
       const { begintime, endtime, page = 1, limit = 20, stationNo } = config.query

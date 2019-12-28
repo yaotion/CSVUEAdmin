@@ -6,10 +6,10 @@ const count = 10
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
-    OptNo: '0' + '@integer(1,9)',
-    OptName: '@cname',
-    Qtys: '@float(200,2000,2,2)',
-    Moneys: '@float(200,2000,2,2)',
+    Emp_No: '0' + '@integer(1,9)',
+    Emp_Name: '@cname',
+    SumQty: '@float(200,2000,2,2)',
+    SumMoney: '@float(200,2000,2,2)',
     pageviews: '@integer(300, 5000)'
 
   }))

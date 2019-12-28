@@ -8,29 +8,29 @@ const count = 10
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
-    BussDate: '@date',
-    ShiftNo: '1',
+    Buss_Date: '@date',
+    Shift_No: '1',
     Terminal: '0' + '@integer(0,9)' + '_1',
-    CardNo: '01000111100000' + '@string("number", 4, 4)',
+    Card_No: '01000111100000' + '@string("number", 4, 4)',
 
     StationNo: '0000000' + '@integer(1,9)',
     RandID: '@integer(0, 2)',
-    OilName: function() {
+    Oil_Name: function() {
       return OilNameArray[this.RandID]
     },
-    OilCode: function() {
+    Oil_Code: function() {
       return OilCodeArray[this.RandID]
     },
     Price: '@float(5,10,2,2)',
     Qty: '@float(5,20,2,2)',
     Money: '@float(100,300,2,2)',
-    MoneySale: '@float(100,300,2,2)',
+    Money_Sale: '@float(100,300,2,2)',
     Bal: '@float(50,1000,2,2)',
-    TradeTypeName: '正常',
-    PayWayName: '现金',
-    OptNo: '0' + '@integer(0, 2)',
-    OptName: '@cname',
-    MachTime: '@datetime',
+    TradeType: '正常',
+    Way_Name: '现金',
+    Emp_No: '0' + '@integer(0, 2)',
+    Emp_Name: '@cname',
+    Mach_Time: '@datetime',
     AccNo: '散户'
   }))
 }

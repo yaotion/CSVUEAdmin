@@ -29,7 +29,7 @@ for (let i = 0; i < count; i++) {
 
 export default [
   {
-    url: '/station/stationDetailListQuery',
+    url: '/stationInfo/stationDetailListQuery',
     type: 'get',
     response: config => {
       const { stationNo, stationType } = config.query
@@ -51,7 +51,7 @@ export default [
   },
 
   {
-    url: '/station/stationAdd',
+    url: '/stationInfo/stationAdd',
     type: 'post',
     response: _ => {
       return {
@@ -62,7 +62,16 @@ export default [
   },
 
   {
-    url: '/article/update',
+    url: '/stationInfo/stationUpdate',
+    type: 'post',
+    response: _ => {
+      return {
+        code: 20000,
+        data: 'success'
+      }
+    }
+  }, {
+    url: '/stationInfo/stationDelete',
     type: 'post',
     response: _ => {
       return {

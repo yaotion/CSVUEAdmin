@@ -7,45 +7,88 @@ export function priceSetListQuery(query) {
     params: query
   })
 }
+export function priceContentListQuery(query) {
+  return request({
+    url: '/priceSet/priceContentListQuery',
+    method: 'get',
+    params: query
+  })
+}
+export function priceStationListQuery(query) {
+  return request({
+    url: '/priceSet/priceStationListQuery',
+    method: 'get',
+    params: query
+  })
+}
+export function priceStationSetStation(query) {
+  return request({
+    url: '/priceSet/priceStationSetStation',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
+  })
+}
+export function priceOilListQuery(query) {
+  return request({
+    url: '/priceSet/priceOilListQuery',
+    method: 'get',
+    params: query
+  })
+}
+export function priceContentSetOil(query) {
+  return request({
+    url: '/priceSet/priceContentSetOil',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
+  })
+}
 export function priceSetAdd(query) {
   return request({
     url: '/priceSet/priceSetAdd',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function priceSetUpdate(query) {
   return request({
     url: '/priceSet/priceSetUpdate',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function priceSetDelete(query) {
   return request({
     url: '/priceSet/priceSetDelete',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
-export function oilPriceAdd(query) {
+export function priceContentAdd(query) {
   return request({
-    url: '/priceSet/oilPriceAdd',
+    url: '/priceSet/priceContentAdd',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
-export function oilPriceUpdate(query) {
+export function priceContentUpdate(query) {
   return request({
-    url: '/priceSet/oilPriceUpdate',
+    url: '/priceSet/priceContentUpdate',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
-export function oilPriceDelete(query) {
+export function priceContentDelete(query) {
   return request({
-    url: '/priceSet/oilPriceDelete',
+    url: '/priceSet/priceContentDelete',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }

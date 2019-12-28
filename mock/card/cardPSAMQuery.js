@@ -9,11 +9,11 @@ for (let i = 0; i < count; i++) {
     stationno: '0000000' + '@string("number", 1, 1)',
     OptName: '@cname',
     OptNo: '@string("number", 4, 4)',
-    MakeTime: '@datetime',
+    OptTime: '@datetime',
     BeginDate: '@datetime("yyyyMMdd")',
     EndDate: '@datetime("yyyyMMdd")',
     TermNo: '13110000' + '@string("number", 4, 4)',
-    RemarkNum: '0',
+    RemakeNum: '0',
     CardNo: '01000111100000' + '@string("number", 4, 4)',
     pageviews: '@integer(300, 5000)'
   }))

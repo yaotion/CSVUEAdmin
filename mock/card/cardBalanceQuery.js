@@ -7,18 +7,18 @@ for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
     CardNo: '01000111100000' + '@string("number", 4, 4)',
-    MasterName: '@cname',
+    HolderName: '@cname',
     AccName: '@cname',
-    StartAmt: '@float(200,2000,2,2)',
+    Balance1: '@float(200,2000,2,2)',
 
-    DepositMoney: '@float(200,2000,2,2)',
-    PreMoney: '@float(200,2000,2,2)',
-    TradeMoney: '@float(200,2000,2,2)',
-    DeDepositMoney: '@float(200,2000,2,2)',
-    ReturnMoney: '@float(200,2000,2,2)',
-    RemarkMoney: '@float(200,2000,2,2)',
-    EndAmt: '@float(200,2000,2,2)',
-    DiffMoney: '@float(200,2000,2,2)',
+    Deposit: '@float(200,2000,2,2)',
+    Pre: '@float(200,2000,2,2)',
+    Consume: '@float(200,2000,2,2)',
+    Undeposit: '@float(200,2000,2,2)',
+    Return: '@float(200,2000,2,2)',
+    Refund: '@float(200,2000,2,2)',
+    Balance2: '@float(200,2000,2,2)',
+    Difference: '@float(200,2000,2,2)',
 
     pageviews: '@integer(300, 5000)'
   }))

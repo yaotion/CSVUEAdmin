@@ -5,8 +5,8 @@
       <el-select v-model="listQuery.stationNo" placeholder="站点" clearable style="width: 200px" class="filter-item">
         <el-option v-for="item in stationList" :key="item.stationno" :label="item.stationname" :value="item.stationno" />
       </el-select>
-
-      <el-date-picker v-model="timespan" class="filter-item" type="datetimerange" align="right" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['12:00:00', '08:00:00']" />
+      <el-date-picker v-model="listQuery.begintime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="开始日期" default-time="00:00:00" />
+      <el-date-picker v-model="listQuery.endtime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="结束日期" default-time="23:59:00" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -28,22 +28,16 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="序号" prop="index" align="center" width="60">
-          <template slot-scope="scope">
-            <span>{{ scope.row.index }}</span>
-          </template>
-        </el-table-column>
+        <el-table-column label="序号" type="index" align="center" width="60" />
         <el-table-column label="卡号" prop="CardNo" align="center" width="200" />
         <el-table-column label="员工姓名" prop="EmpName" align="center" width="100" />
-        <el-table-column label="期初余额" prop="AmtStart" align="center" width="100" />
-        <el-table-column label="储值" prop="DepositMoneys" align="center" width="100" />
-        <el-table-column label="扣款" prop="DeductMoneys" align="center" width="100" />
-        <el-table-column label="消费" prop="TradeMoneys" align="center" width="100" />
-        <el-table-column label="期末余额" prop="AmtEnd" align="center" width="100" />
+        <el-table-column label="期初余额" prop="Begin_Balance" align="center" width="120" />
+        <el-table-column label="储值" prop="SaveMoney" align="center" width="120" />
+        <el-table-column label="扣款" prop="UnSaveMoney" align="center" width="120" />
+        <el-table-column label="消费" prop="UseMoney" align="center" width="120" />
+        <el-table-column label="期末余额" prop="End_Balance" align="center" width="120" />
       </el-table>
     </div>
-
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 <style>
@@ -55,10 +49,9 @@ import { stationListQuery } from '@/api/base'
 import { tableToExcel } from '@/utils/excelUtils'
 // import printJS from 'print-js'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 export default {
   name: 'StationEmpBillQuery',
-  components: { Pagination },
+  components: { },
   directives: { waves },
   filters: {
   },
@@ -71,11 +64,9 @@ export default {
       stationList: null,
       timespan: null,
       listQuery: {
-        page: 1,
-        limit: 20,
         begintime: '',
         endtime: '',
-        stationno: ''
+        stationNo: ''
       },
       downloadLoading: false
     }
@@ -88,18 +79,7 @@ export default {
     this.getList()
   },
   methods: {
-    getBegintime() {
-      if (this.timespan && this.timespan[0]) {
-        return this.timespan[0].toString()
-      }
-      return null
-    },
-    getEndtime() {
-      if (this.timespan && this.timespan[1]) {
-        return this.timespan[1].toString()
-      }
-      return null
-    },
+
     getStationList() {
       this.listLoading = true
       stationListQuery(this.listQuery).then(response => {
@@ -112,8 +92,6 @@ export default {
     },
     getList() {
       this.listLoading = true
-      this.listQuery.begintime = this.getBegintime()
-      this.listQuery.endtime = this.getEndtime()
       stationEmpBillQuery(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
@@ -153,7 +131,6 @@ export default {
       return sums
     },
     handleFilter() {
-      this.listQuery.page = 1
       this.getList()
     },
     handleDownload() {
@@ -164,12 +141,6 @@ export default {
       } finally {
         this.downloadLoading = false
       }
-    },
-
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        return v[j]
-      }))
     }
   }
 }

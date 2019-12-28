@@ -2,10 +2,9 @@
   <div class="app-container">
     <div class="filter-container">
 
-      <el-input v-model="listQuery.stationNo" class="filter-item" placeholder="油站编号" clearable style="width: 150px" />
-      <el-select v-model="listQuery.stationType" placeholder="站点类型" clearable style="width: 150px" class="filter-item">
-        <el-option v-for="item in stationTypeList" :key="item.stationType" :label="item.stationTypeName" :value="item.stationType" />
-      </el-select>
+      <el-input v-model="listQuery.actName" class="filter-item" placeholder="活动名称" clearable style="width: 250px" />
+      <el-date-picker v-model="listQuery.beginTime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="开始日期" default-time="00:00:00" />
+      <el-date-picker v-model="listQuery.endTime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="结束日期" default-time="23:59:00" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Refresh
       </el-button>
@@ -32,10 +31,10 @@
               <template slot-scope="props">
                 <el-form label-position="left" label-width="40px" size="mini">
                   <el-form-item label="开始">
-                    <span>{{ props.row.StartTM }}</span>
+                    <span>{{ props.row.ActStartTime }}</span>
                   </el-form-item>
                   <el-form-item label="结束">
-                    <span>{{ props.row.EndTM }}</span>
+                    <span>{{ props.row.ActEndTime }}</span>
                   </el-form-item>
 
                 </el-form>
@@ -62,8 +61,8 @@
           </el-table></el-col>
         <el-col :span="17">
           <el-table v-loading="listContentLoading" border :data="listContent" size="mini" fit highlight-current-row>
-            <el-table-column label="用户类型" prop="DisObjectTypeName" align="center" width="80" :resizable="false" />
-            <el-table-column label="用户级别" prop="DisObjectTypeIDName" align="center" width="80" :resizable="false" />
+            <el-table-column label="用户类型" prop="DisObjectType" :formatter="FormatDisObjectType" align="center" width="80" :resizable="false" />
+            <el-table-column label="用户级别" prop="DisObjectName" align="center" width="80" :resizable="false" />
             <el-table-column label="最小升数" prop="ValidMinVol" align="center" width="80" :resizable="false" />
             <el-table-column label="优惠额度" prop="DCTMoney" align="center" width="80" :resizable="false" />
             <el-table-column label="适用油站" prop="StationID" align="center" width="140" :resizable="false" />
@@ -88,17 +87,17 @@
           <el-form-item label="活动名称" prop="ActName">
             <el-input v-model="temp.ActName" />
           </el-form-item>
-          <el-form-item label="开始时间" prop="StartTM">
-            <el-date-picker v-model="temp.StartTM" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择开始时间" align="right" :picker-options="pickerOptions" />
+          <el-form-item label="开始时间" prop="ActStartTime">
+            <el-date-picker v-model="temp.ActStartTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择开始时间" align="right" :picker-options="pickerOptions" />
           </el-form-item>
-          <el-form-item label="结束时间" prop="EndTM">
-            <el-date-picker v-model="temp.EndTM" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择结束时间" align="right" :picker-options="pickerOptions" />
+          <el-form-item label="结束时间" prop="ActEndTime">
+            <el-date-picker v-model="temp.ActEndTime" value-format="yyyy-MM-dd HH:mm:ss" type="datetime" placeholder="选择结束时间" align="right" :picker-options="pickerOptions" />
           </el-form-item>
         </el-form>
 
         <el-form v-if="((dialogStatus==='contentAdd') || (dialogStatus==='contentUpdate'))" ref="dataForm_Content" :rules="rulesContent" :model="temp" label-position="right" label-width="80px" style="width: 350px; margin-left:50px;">
-          <el-form-item label="用户类型" prop="AccNo">
-            <el-select v-model="temp.DisObjectType" placeholder="请输入用户类型">
+          <el-form-item label="用户类型" prop="DisObjectType">
+            <el-select v-model="temp.DisObjectType" placeholder="请输入用户类型" @change="disObjectTypeChange">
               <el-option
                 v-for="item in objectTypeList"
                 :key="item.disObjectTypeID"
@@ -107,8 +106,8 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item :label="temp.DisObjectType === 2?'用户等级':'单位名称'" prop="RetailTypeID">
-            <el-select v-show="temp.DisObjectType === 2" v-model="temp.DisObjectTypeID" placeholder="请选择用户级别">
+          <el-form-item :label="temp.DisObjectType === 2?'用户等级':'单位名称'" prop="DisObjectID">
+            <el-select v-show="temp.DisObjectType === 2" v-model="DisObjectID" placeholder="请选择用户级别">
               <el-option
                 v-for="item in listRetailType"
                 :key="item.retailTypeID"
@@ -116,7 +115,7 @@
                 :value="item.retailTypeID"
               />
             </el-select>
-            <el-select v-show="temp.DisObjectType === 1" v-model="temp.DisObjectTypeID" placeholder="请选择单位">
+            <el-select v-show="temp.DisObjectType === 1" v-model="DisObjectID" placeholder="请选择单位">
               <el-option
                 v-for="item in listCust"
                 :key="item.id"
@@ -126,7 +125,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="适用站点" prop="StationNo">
-            <el-select v-model="temp.StationID" multiple placeholder="请指定活动适用站点">
+            <el-select v-model="contentStation" multiple placeholder="请指定活动适用站点">
               <el-option
                 v-for="item in listStation"
                 :key="item.stationno"
@@ -147,9 +146,9 @@
             <el-select v-model="temp.OilCode" multiple placeholder="指定油品">
               <el-option
                 v-for="item in listOilCode"
-                :key="item.oilCode"
-                :label="item.oilName"
-                :value="item.oilCode"
+                :key="item.OilCode"
+                :label="item.OilName"
+                :value="item.OilCode"
               />
             </el-select>
           </el-form-item>
@@ -202,12 +201,13 @@ export default {
         callback(new Error('请输入活动结束时间'))
         return
       }
-      if (value <= this.temp.StartTM) {
+      if (value <= this.temp.ActStartTime) {
         callback(new Error('活动结束时间必须大于开始时间'))
         return
       }
       callback()
     }
+
     return {
       notExporting: true,
       tableKey: 0,
@@ -258,8 +258,9 @@ export default {
           stationTypeName: '发卡点' }
       ],
       listQuery: {
-        stationNo: '',
-        stationType: ''
+        beginTime: '',
+        endTime: '',
+        actName: ''
       },
       dialogFormVisible: false,
       dialogStatus: '',
@@ -271,16 +272,16 @@ export default {
       },
       rules: {
         ActName: [{ required: true, message: '活动名称不能为空', trigger: 'blur' }],
-        StartTM: [{ required: true, message: '活动名称开始时间不能为空', trigger: 'blur' }],
-        EndTM: [{ required: true, validator: validateEndTM, trigger: 'blur' }
+        ActStartTime: [{ required: true, message: '活动名称开始时间不能为空', trigger: 'blur' }],
+        ActEndTime: [{ required: true, validator: validateEndTM, trigger: 'blur' }
         ]
       },
       rulesContent: {
-        ActName: [{ required: true, message: '活动名称不能为空', trigger: 'blur' }],
-        StartTM: [{ required: true, message: '活动名称开始时间不能为空', trigger: 'blur' }],
-        EndTM: [{ required: true, validator: validateEndTM, trigger: 'blur' }
-        ]
+        DisObjectType: [{ required: true, message: '用户类型不能为空', trigger: 'blur' }],
+        DisObjectID: [{ required: true, message: '优惠对象不能为空', trigger: 'blur' }]
+
       },
+      selectedActRow: {},
       temp: {
         index: 0,
         StationNo: '',
@@ -301,7 +302,29 @@ export default {
     }
   },
   computed: {
-
+    contentStation: {
+      // getter 方法
+      get() {
+        return this.temp.StationID
+      },
+      // setter 方法
+      set(newValue) {
+        this.temp.StationID = newValue
+        this.temp.StationName = this.listStation.filter(item => newValue.indexOf(item.stationno) > -1).map(item => item.stationname).join('|')
+      }
+    },
+    DisObjectID: {
+      // getter 方法
+      get() {
+        return this.temp.DisObjectID
+      },
+      // setter 方法
+      set(newValue) {
+        this.temp.DisObjectID = newValue
+        if (this.temp.DisObjectType === 1) { this.temp.DisObjectName = this.listCust.filter(item => newValue === item.id).map(item => item.label).join('|') }
+        if (this.temp.DisObjectType === 2) { this.temp.DisObjectName = this.listRetailType.filter(item => newValue === item.retailTypeID).map(item => item.retailTypeName).join('|') }
+      }
+    }
   },
   created() {
     this.getList()
@@ -311,8 +334,16 @@ export default {
     this.getStationList()
   },
   methods: {
+
+    disObjectTypeChange: function() {
+      this.temp.DisObjectID = null
+    },
+    FormatDisObjectType: function(row, column) {
+      return row.DisObjectType === 2 ? '散户优惠' : row.DisObjectType === 1 ? '单位优惠' : '其他'
+    },
     getList() {
       this.listLoading = true
+      console.info(this.listQuery)
       discountActDetailListQuery(this.listQuery).then(response => {
         this.list = response.data.items
         // Just to simulate the time of the request
@@ -364,6 +395,7 @@ export default {
     },
     getContentList(row) {
       this.listContentLoading = true
+      this.selectedActRow = row
       discountContentDetailListQuery(row).then(response => {
         this.listContent = response.data.items
         // Just to simulate the time of the request
@@ -381,17 +413,21 @@ export default {
 
     resetTemp() {
       this.temp = {
-        index: 0,
-        OptNo: '',
-        OptName: '',
-        OptOrg: '',
-        OptDuty: '',
-        Remark: '',
-        Enabled: ''
+        DisID: '',
+        ActID: this.selectedActRow.ActID,
+        StationID: [],
+        StationName: [],
+        DisObjectID: null,
+        DisObjectType: 1,
+        OilCode: [],
+        DctMoney: 0.00,
+        ValidMinVol: 0.00
+
       }
     },
     handleActAdd() {
       this.resetTemp()
+
       this.dialogStatus = 'actAdd'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -400,6 +436,7 @@ export default {
     },
     handleContentAdd() {
       this.resetTemp()
+      console.info(this.temp)
       this.dialogStatus = 'contentAdd'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -455,7 +492,7 @@ export default {
     },
     handleContentUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-
+      this.temp.orginDisObjectType = this.temp.DisObjectType
       if (!Array.isArray(row.OilCode)) {
         const tempOil = row.OilCode
         this.temp.OilCode = tempOil.split('|')
@@ -474,15 +511,10 @@ export default {
       this.$refs['dataForm_Content'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-
+          tempData.StationID = tempData.StationID.join('|')
+          tempData.OilCode = tempData.OilCode.join('|')
           discountContentAdd(tempData).then(() => {
-            for (const v of this.listContent) {
-              if (v.StationNo === this.temp.StationNo) {
-                const index = this.listContent.indexOf(v)
-                this.listContent.splice(index, 1, this.temp)
-                break
-              }
-            }
+            this.getContentList(this.selectedActRow)
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -498,15 +530,12 @@ export default {
       this.$refs['dataForm_Content'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-
+          console.info(tempData)
+          tempData.StationID = tempData.StationID.join('|')
+          tempData.OilCode = tempData.OilCode.join('|')
+          console.info(tempData)
           discountContentUpdate(tempData).then(() => {
-            for (const v of this.listContent) {
-              if (v.ContentID === this.temp.ContentID) {
-                const index = this.listContent.indexOf(v)
-                this.listContent.splice(index, 1, this.temp)
-                break
-              }
-            }
+            this.getContentList(this.selectedActRow)
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',

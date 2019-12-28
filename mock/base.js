@@ -17,6 +17,10 @@ const PreIdList = [
     preName: '明折明扣'
   },
   {
+    preId: -1,
+    preName: '全部优惠'
+  },
+  {
     preId: 1,
     preName: '优惠返还'
   },
@@ -27,13 +31,13 @@ const PreIdList = [
 ]
 const ShiftListQuery = [
   {
-    shiftNo: 1
+    shift_No: 1
   },
   {
-    shiftNo: 2
+    shift_No: 2
   },
   {
-    shiftNo: 3
+    shift_No: 3
   }
 ]
 const OilCodeList = [
@@ -120,6 +124,16 @@ const OptList = [
   {
     optNo: '02',
     optName: '李四'
+  }
+]
+const EmpList = [
+  {
+    Emp_No: '01',
+    Emp_Name: '张三'
+  },
+  {
+    Emp_No: '02',
+    Emp_Name: '李四'
   }
 ]
 
@@ -378,6 +392,19 @@ export default [
       }
     }
   },
+  {
+    url: '/base/empListQuery',
+    type: 'get',
+    response: config => {
+      return {
+        code: 20000,
+        data: {
+          items: EmpList
+        }
+      }
+    }
+  },
+
   {
     url: '/base/cardStateCompListQuery',
     type: 'get',

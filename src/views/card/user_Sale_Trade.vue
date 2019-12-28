@@ -29,7 +29,6 @@
       <el-table-column label="序号" type="index" align="center" width="60" />
       <el-table-column label="站点" prop="stationno" align="center" width="90" />
       <el-table-column label="负责人" prop="MasterName" align="center" width="80" />
-
       <el-table-column label="操作员" prop="OptName" align="center" width="100">
         <template slot-scope="scope2">
           <span>{{ scope2.row.OptName +'|'+ scope2.row.OptNo }}</span>

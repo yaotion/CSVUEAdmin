@@ -22,11 +22,11 @@
       >
         <el-table-column label="操作员编号" prop="OptNo" align="center" width="100" />
         <el-table-column label="操作员姓名" prop="OptName" align="center" width="120" />
-        <el-table-column label="所属单位" prop="OptOrg" align="center" width="200" />
-        <el-table-column label="职务" prop="OptDuty" align="center" width="120" />
-        <el-table-column label="是否启用" prop="Enabled" align="center" width="100">
+        <el-table-column label="所属单位" prop="StationName" align="center" width="200" />
+        <el-table-column label="职务" prop="OptLevel" align="center" width="120" />
+        <el-table-column label="是否启用" prop="UseFlag" align="center" width="100">
           <template slot-scope="{row}">
-            <span>{{ row.Enabled===true?"√":"" }}</span>
+            <span>{{ row.UseFlag===0?"√":"" }}</span>
           </template>
         </el-table-column>
         <el-table-column v-if="notExporting" label="操作" align="center" width="350" class-name="small-padding fixed-width">
@@ -54,8 +54,8 @@
           <el-form-item label="操作员姓名" prop="OptName">
             <el-input v-model="temp.OptName" />
           </el-form-item>
-          <el-form-item label="所属单位" prop="OptOrg">
-            <el-select v-model="temp.OptOrg" placeholder="请选择">
+          <el-form-item label="所属站点" prop="StationNo">
+            <el-select v-model="temp.StationNo" placeholder="请选择">
               <el-option
                 v-for="item in orgList"
                 :key="item.stationno"
@@ -64,21 +64,21 @@
               />
             </el-select>
           </el-form-item>
-          <el-form-item label="职务" prop="OptDuty">
-            <el-input v-model="temp.OptDuty" />
+          <el-form-item label="职务" prop="OptLevel">
+            <el-input v-model="temp.OptLevel" />
           </el-form-item>
-          <el-form-item label="备注" prop="Remark">
-            <el-input v-model="temp.Remark" type="textarea" :rows="2" />
+          <el-form-item label="备注" prop="Memo">
+            <el-input v-model="temp.Memo" type="textarea" :rows="2" />
           </el-form-item>
 
-          <el-form-item label="密码" prop="Password">
-            <el-input v-model="temp.Password" show-password />
+          <el-form-item label="密码" prop="Pin">
+            <el-input v-model="temp.Pin" show-password />
           </el-form-item>
           <el-form-item label="确认密码" prop="ConfirmPassword">
             <el-input v-model="temp.ConfirmPassword" show-password />
           </el-form-item>
-          <el-form-item label="启用" prop="Enabled">
-            <el-switch v-model="temp.Enabled" />
+          <el-form-item label="启用" prop="UseFlag">
+            <el-switch v-model="temp.UseFlag" :active-value="0" :inactive-value="1" />
           </el-form-item>
         </el-form>
         <el-form v-if=" dialogStatus === 'update'" ref="dataForm_Update" :rules="rules" size="mini" :model="temp" label-position="right" label-width="100px" style="width: 500px; margin-left:50px;">
@@ -89,18 +89,16 @@
             <el-input v-model="temp.OptName" />
           </el-form-item>
           <el-form-item label="所属单位">
-            <el-input v-model="temp.OptOrg" disabled="true" />
+            <el-input v-model="temp.StationName" disabled="true" />
           </el-form-item>
-          <el-form-item label="职务" prop="OptDuty">
-            <el-input v-model="temp.OptDuty" />
+          <el-form-item label="职务">
+            <el-input v-model="temp.OptLevel" />
           </el-form-item>
-          <el-form-item label="备注" prop="Remark">
-            <el-input v-model="temp.Remark" type="textarea" :rows="2" />
+          <el-form-item label="备注" prop="Memo">
+            <el-input v-model="temp.Memo" type="textarea" :rows="2" />
           </el-form-item>
-
           <el-form-item>
-            <el-checkbox v-model="temp.Enabled">启用该操作员</el-checkbox>
-            <el-checkbox ref="InitPassword" v-model="temp.InitPassword">初始化操作员密码[初始化后密码为空]</el-checkbox>
+            <el-switch v-model="temp.UseFlag" :active-value="0" :inactive-value="1" />
           </el-form-item>
         </el-form>
 
@@ -122,8 +120,8 @@
           </el-form-item>
 
         </el-form>
-        <el-form v-if=" dialogStatus === 'power'" ref="dataForm_Power" :rules="rules" size="mini" :model="temp" label-position="right" label-width="100px" style="width: 500px; margin-left:50px;">
-          <el-transfer v-model="powerList.hasList" :titles="['系统功能', '已有功能']" :data="powerList.leftList" />
+        <el-form v-if=" dialogStatus === 'power'" ref="dataForm_Power" size="mini" :model="temp" label-position="right" label-width="100px" style="width: 500px; margin-left:50px;">
+          <el-transfer v-model="powerList.hasList" :props="{key: 'FunctionNo',label: 'FunctionName'}" :titles="['系统功能', '已有功能']" :data="powerList.leftList" />
         </el-form>
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogFormVisible = false">
@@ -139,7 +137,7 @@
 </template>
 
 <script>
-import { operatorDetailListQuery, operatorAdd, operatorUpdate, operatorDelete, operatorUpdatePassword } from '@/api/operatorManage'
+import { operatorDetailListQuery, operatorAdd, operatorUpdate, operatorDelete, systemFunctionList, optFunctionList, optFunctionUpdate, operatorUpdatePassword } from '@/api/operatorManage'
 import { stationListQuery } from '@/api/base'
 import { tableToExcel } from '@/utils/excelUtils'
 // import printJS from 'print-js'
@@ -172,36 +170,11 @@ export default {
 
       powerList:
       {
+        OptNo: '',
         leftList: [
-          { key: 1,
-            label: '功能1'
-          },
-          { key: 2,
-            label: '功能2'
-          },
-          { key: 3,
-            label: '功能3'
-          },
-          { key: 4,
-            label: '功能4'
-          },
-          { key: 5,
-            label: '功能5'
-          },
-          { key: 6,
-            label: '功能6'
-          },
-          { key: 7,
-            label: '功能7'
-          },
-          { key: 8,
-            label: '功能8'
-          },
-          { key: 9,
-            label: '功能9'
-          }
+
         ],
-        hasList: [1, 2]
+        hasList: []
       },
       textMap: {
         update: '修改操作员',
@@ -224,6 +197,9 @@ export default {
         OptNo: [
           { required: true, message: '工号不能为空', trigger: 'blur' }
         ],
+        StationNo: [
+          { required: true, message: '站点不能为空', trigger: 'blur' }
+        ],
         OptName: [{ required: true, message: '姓名不能为空', trigger: 'blur' }]
       },
       temp: {
@@ -233,10 +209,20 @@ export default {
     }
   },
   computed: {
-
+    UseFlagCheck: {
+      // getter 方法
+      get() {
+        return this.temp.UseFlag === 0
+      },
+      // setter 方法
+      set(newValue) {
+        this.temp.UseFlag = newValue ? 0 : 1
+      }
+    }
   },
   created() {
     this.getList()
+    this.getSystemFunctionList()
     this.getStationList()
   },
   methods: {
@@ -255,6 +241,16 @@ export default {
       this.listLoading = true
       stationListQuery(this.listQuery).then(response => {
         this.orgList = response.data.items
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
+    },
+    getSystemFunctionList() {
+      this.listLoading = true
+      systemFunctionList(this.listQuery).then(response => {
+        this.allPowerList = response.data.items.concat()
         // Just to simulate the time of the request
         setTimeout(() => {
           this.listLoading = false
@@ -312,7 +308,7 @@ export default {
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-
+      console.info(this.temp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -323,16 +319,9 @@ export default {
       this.$refs['dataForm_Update'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.InitPassword = this.$refs['InitPassword'].value
           console.info(tempData)
           operatorUpdate(tempData).then(() => {
-            for (const v of this.list) {
-              if (v.OptNo === this.temp.OptNo) {
-                const index = this.list.indexOf(v)
-                this.list.splice(index, 1, this.temp)
-                break
-              }
-            }
+            this.handleFilter()
             this.dialogFormVisible = false
             this.$notify({
               title: 'Success',
@@ -346,17 +335,56 @@ export default {
     },
 
     handlePower(row) {
-      this.temp = Object.assign({}, row) // copy obj
-
-      this.dialogStatus = 'power'
-      this.dialogFormVisible = true
-      this.$nextTick(() => {
-        this.$refs['dataForm_Power'].clearValidate()
+      this.listQuery = Object.assign({}, row) // copy obj
+      optFunctionList(this.listQuery).then(response => {
+        console.info(response)
+        this.powerList.leftList = this.allPowerList.concat()
+        this.powerList.OptNo = row.OptNo
+        this.powerList.hasList = response.data.items.map(x => { return x.FunctionNo })
+        console.info(this.powerList)
+        this.dialogStatus = 'power'
+        this.dialogFormVisible = true
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
       })
     },
     updatePower(row) {
-
+      var qry = {}
+      qry.OptNo = this.powerList.OptNo
+      qry.FunctionList = []
+      console.info(this.powerList)
+      this.powerList.hasList.forEach(element => {
+        console.info(element)
+        this.powerList.leftList.forEach(eleAll => {
+          console.info(eleAll)
+          if (element === eleAll.FunctionNo) {
+            console.info('------------Capture---------------')
+            console.info(eleAll.FunctionNo + '------------------------------' + eleAll.FunctionType)
+            qry.FunctionList.push(
+              {
+                FunctionNo: eleAll.FunctionNo,
+                FunctionType: eleAll.FunctionType
+              }
+            )
+            return false
+          }
+        })
+      })
+      console.info('--------Submit--------------')
+      console.info(qry)
+      optFunctionUpdate(qry).then(response => {
+        this.dialogFormVisible = false
+        this.$notify({
+          title: 'Success',
+          message: 'Update Power Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      })
     },
+
     handlePassword(row) {
       this.temp = Object.assign({}, row) // copy obj
 

@@ -1,51 +1,42 @@
 import request from '@/utils/request'
 
-export function retailTypeListQuery(query) {
+export function stationDetailListQuery(query) {
   return request({
-    url: '/retailType/retailTypeListQuery',
+    url: '/stationInfo/stationDetailListQuery',
     method: 'get',
     params: query
   })
 }
+export function stationAdd(query) {
+  return request({
+    url: '/stationInfo/stationAdd',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
+  })
+}
+export function stationUpdate(query) {
+  return request({
+    url: '/stationInfo/stationUpdate',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
+  })
+}
+export function stationDelete(query) {
+  return request({
+    url: '/stationInfo/stationDelete',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
+  })
+}
+export function stationInit(query) {
+  return request({
+    url: '/stationInfo/stationInit',
+    method: 'post',
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
+  })
+}
 
-export function retailTypeAdd(query) {
-  return request({
-    url: '/retailType/retailTypeAdd',
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    data: JSON.stringify(query)
-  })
-}
-export function retailTypeUpdate(query) {
-  return request({
-    url: '/retailType/retailTypeUpdate',
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    data: JSON.stringify(query)
-  })
-}
-export function retailTypeDelete(query) {
-  return request({
-    url: '/retailType/retailTypeDelete',
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    data: JSON.stringify(query)
-  })
-}
-
-export function retailTypeUserCardListQuery(query) {
-  return request({
-    url: '/retailType/retailTypeUserCardListQuery',
-    method: 'get',
-    params: query
-  })
-}
-
-export function retailTypeSetUserCard(query) {
-  return request({
-    url: '/retailType/retailTypeSetUserCard',
-    method: 'post',
-    headers: { 'Content-Type': 'application/json' },
-    data: JSON.stringify(query)
-  })
-}

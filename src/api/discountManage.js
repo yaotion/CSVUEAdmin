@@ -18,42 +18,48 @@ export function discountActAdd(query) {
   return request({
     url: '/discount/discountActAdd',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function discountActUpdate(query) {
   return request({
     url: '/discount/discountActUpdate',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function discountActDelete(query) {
   return request({
     url: '/discount/discountActDelete',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function discountContentAdd(query) {
   return request({
     url: '/discount/discountContentAdd',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function discountContentUpdate(query) {
   return request({
     url: '/discount/discountContentUpdate',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function discountContentDelete(query) {
   return request({
     url: '/discount/discountContentDelete',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 

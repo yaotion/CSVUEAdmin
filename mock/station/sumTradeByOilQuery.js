@@ -7,15 +7,15 @@ for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
     RanID: '@integer(0,1)',
-    OilCode: function() {
+    Oil_Code: function() {
       return TempList[this.RanID]
     },
-    OilName: function() {
+    Oil_Name: function() {
       return TempList[this.RanID]
     },
 
-    Qtys: '@float(200,2000,2,2)',
-    Moneys: '@float(200,2000,2,2)',
+    SumQty: '@float(200,2000,2,2)',
+    SumMoney: '@float(200,2000,2,2)',
     pageviews: '@integer(300, 5000)'
 
   }))

@@ -1,13 +1,15 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.StationNo" placeholder="站点" clearable style="width: 200px" class="filter-item">
+      <el-select v-model="listQuery.stationNo" placeholder="站点" clearable style="width: 200px" class="filter-item" @change="getStationTankList">
         <el-option v-for="item in stationList" :key="item.stationno" :label="item.stationname" :value="item.stationno" />
       </el-select>
-      <el-select v-model="listQuery.TankNo" placeholder="油罐" clearable style="width: 100px" class="filter-item">
-        <el-option v-for="item in tankList" :key="item.tankNo" :label="item.tankNo" :value="item.tankNo" />
+      <el-date-picker v-model="listQuery.begintime" class="filter-item" type="date" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="开始日期" default-time="00:00:00" />
+      <el-date-picker v-model="listQuery.endtime" class="filter-item" type="date" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="结束日期" default-time="23:59:00" />
+      <el-select v-model="listQuery.TankNo" placeholder="油罐" clearable style="width: 200px" class="filter-item">
+        <el-option v-for="item in tankList" :key="item" :label="item" :value="item" />
       </el-select>
-      <el-date-picker v-model="timespan" class="filter-item" type="datetimerange" align="right" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['12:00:00', '08:00:00']" />
+
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -29,55 +31,49 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="序号" prop="index" align="center" width="60">
-          <template slot-scope="scope">
-            <span>{{ scope.row.index }}</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="姓名" prop="OptName" align="center" width="100" />
-        <el-table-column label="交班时间" prop="OptTime" align="center" width="100" />
+        <el-table-column label="序号" type="index" align="center" width="60" />
+        <el-table-column label="姓名" prop="Emp_Name" align="center" width="100" />
+        <el-table-column label="交班时间" prop="AddTime" align="center" width="100" />
 
         <el-table-column label="交班前" align="center">
-          <el-table-column label="高度" prop="StartHeight" align="center" width="80" />
-          <el-table-column label="体积" prop="StartQty" align="center" width="80" />
-          <el-table-column label="温度" prop="StartTemp" align="center" width="80" />
-          <el-table-column label="密度" prop="StartDensity" align="center" width="80" />
-          <el-table-column label="重量" prop="StartWeight" align="center" width="80" />
+          <el-table-column label="高度" prop="Start_Oilh" align="center" width="80" />
+          <el-table-column label="体积" prop="Start_Vol" align="center" width="80" />
+          <el-table-column label="温度" prop="Start_Temp" align="center" width="80" />
+          <el-table-column label="密度" prop="Start_Dens" align="center" width="80" />
+          <el-table-column label="重量" prop="Start_Wt" align="center" width="80" />
         </el-table-column>
         <el-table-column label="卸油单" align="center">
-          <el-table-column label="体积" prop="BillQty" align="center" width="80" />
-          <el-table-column label="密度" prop="BillDensity" align="center" width="80" />
-          <el-table-column label="重量" prop="BillWeight" align="center" width="80" />
+          <el-table-column label="体积" prop="Doc_Vol" align="center" width="80" />
+          <el-table-column label="密度" prop="Doc_Dens" align="center" width="80" />
+          <el-table-column label="重量" prop="Doc_Wt" align="center" width="80" />
         </el-table-column>
         <el-table-column label="卸油量" align="center">
-          <el-table-column label="体积" prop="Qty" align="center" width="80" />
-          <el-table-column label="密度" prop="Density" align="center" width="80" />
-          <el-table-column label="重量" prop="Weight" align="center" width="80" />
+          <el-table-column label="体积" prop="Qty_Vol" align="center" width="80" />
+          <el-table-column label="密度" prop="Qty_Dens" align="center" width="80" />
+          <el-table-column label="重量" prop="Qty_Wt" align="center" width="80" />
         </el-table-column>
         <el-table-column label="账面数量" align="center">
-          <el-table-column label="体积" prop="ZMQty" align="center" width="80" />
-          <el-table-column label="重量" prop="ZMWeight" align="center" width="80" />
+          <el-table-column label="体积" prop="Acco_Vol" align="center" width="80" />
+          <el-table-column label="重量" prop="Acco_Wt" align="center" width="80" />
         </el-table-column>
         <el-table-column label="交班后" align="center">
-          <el-table-column label="高度" prop="EndHeight" align="center" width="80" />
-          <el-table-column label="体积" prop="EndQty" align="center" width="80" />
-          <el-table-column label="温度" prop="EndTemp" align="center" width="80" />
-          <el-table-column label="密度" prop="EndDensity" align="center" width="80" />
-          <el-table-column label="重量" prop="EndWeight" align="center" width="80" />
+          <el-table-column label="高度" prop="End_Oilh" align="center" width="80" />
+          <el-table-column label="体积" prop="End_Vol" align="center" width="80" />
+          <el-table-column label="温度" prop="End_Temp" align="center" width="80" />
+          <el-table-column label="密度" prop="End_Dens" align="center" width="80" />
+          <el-table-column label="重量" prop="End_Wt" align="center" width="80" />
         </el-table-column>
         <el-table-column label="损耗" align="center">
-          <el-table-column label="重量" prop="LossWeight" align="center" width="80" />
+          <el-table-column label="重量" prop="Loss_Wt" align="center" width="80" />
         </el-table-column>
         <el-table-column label="泵码" align="center">
-          <el-table-column label="班前泵码" prop="StartPump" align="center" width="100" />
-          <el-table-column label="班后泵码" prop="EndPump" align="center" width="100" />
-          <el-table-column label="泵码差" prop="PumpDiff" align="center" width="100" />
+          <el-table-column label="班前泵码" prop="Start_Pump" align="center" width="100" />
+          <el-table-column label="班后泵码" prop="End_Pump" align="center" width="100" />
+          <el-table-column label="泵码差" prop="Diff_Pump" align="center" width="100" />
         </el-table-column>
 
       </el-table>
     </div>
-
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 <style >
@@ -99,14 +95,15 @@
  }
 </style>
 <script>
-import { stationTankStoreQuery } from '@/api/station'
+import { stationTankShiftQuery, stationStationTanks } from '@/api/station'
+import { stationListQuery } from '@/api/base'
+import { tableToExcel } from '@/utils/excelUtils'
 // import printJS from 'print-js'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-import { tableToExcel } from '@/utils/excelUtils'
+
 export default {
-  name: 'StationTankStoreQuery',
-  components: { Pagination },
+  name: 'StationTankShiftQuery',
+  components: { },
   directives: { waves },
   filters: {
   },
@@ -114,19 +111,14 @@ export default {
     return {
       list: null,
       total: 0,
-
       listLoading: true,
       stationList: null,
       tankList: null,
-      timespan: null,
       listQuery: {
-        page: 1,
-        limit: 20,
         begintime: '',
         endtime: '',
         TankNo: '',
-        StationNo: ''
-
+        stationNo: ''
       },
       downloadLoading: false
     }
@@ -136,26 +128,27 @@ export default {
   },
   created() {
     this.getList()
+    this.getStationList()
   },
   methods: {
-    getBegintime() {
-      if (this.timespan && this.timespan[0]) {
-        return this.timespan[0].toString()
-      }
-      return null
+    getStationTankList() {
+      stationStationTanks(this.listQuery).then(response => {
+        this.tankList = response.data.items
+      })
     },
-    getEndtime() {
-      if (this.timespan && this.timespan[1]) {
-        return this.timespan[1].toString()
-      }
-      return null
+    getStationList() {
+      this.listLoading = true
+      stationListQuery(this.listQuery).then(response => {
+        this.stationList = response.data.items
+        // Just to simulate the time of the request
+        setTimeout(() => {
+          this.listLoading = false
+        }, 1.5 * 1000)
+      })
     },
-
     getList() {
       this.listLoading = true
-      this.listQuery.begintime = this.getBegintime()
-      this.listQuery.endtime = this.getEndtime()
-      stationTankStoreQuery(this.listQuery).then(response => {
+      stationTankShiftQuery(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
         // Just to simulate the time of the request
@@ -194,23 +187,18 @@ export default {
       return sums
     },
     handleFilter() {
-      this.listQuery.page = 1
       this.getList()
     },
     handleDownload() {
       this.downloadLoading = true
-      var dataTmp = document.querySelector('#tabData')
+      var tableName = '#tabData'
+      var fileName = '油罐库存记录查询'
+      var dataTmp = document.querySelector(tableName)
       try {
-        tableToExcel(dataTmp, '油站库存查询')
+        tableToExcel(dataTmp, fileName)
       } finally {
         this.downloadLoading = false
       }
-    },
-
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        return v[j]
-      }))
     }
   }
 }

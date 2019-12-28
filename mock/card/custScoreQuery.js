@@ -8,9 +8,9 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     AccNo: '000' + '@string("number", 1, 1)',
     AccName: '@cname',
-    ScoreIn: '@integer(300, 5000)',
-    ScoreOut: '@integer(300, 5000)',
-    ScoreBalance: '@integer(300, 5000)',
+    SavePoint: '@integer(300, 5000)',
+    UsePoint: '@integer(300, 5000)',
+    Bal: '@integer(300, 5000)',
     pageviews: '@integer(300, 5000)'
   }))
 }

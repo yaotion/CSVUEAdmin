@@ -1,10 +1,11 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-checkbox v-model="checked" style="color:red;">查找不平账户</el-checkbox>
-      <el-input v-model="listQuery.CardNo" placeholder="请输入卡号" clearable style="width: 200px" class="filter-item" />
+      <el-checkbox v-model="listQuery.onlyUnBalance" style="color:red;">查找不平账户</el-checkbox>
+      <el-input v-model="listQuery.cardNo" placeholder="请输入卡号" clearable style="width: 200px" class="filter-item" />
 
-      <el-date-picker v-model="timespan" class="filter-item" type="datetimerange" align="right" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['12:00:00', '08:00:00']" />
+      <el-date-picker v-model="listQuery.begintime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="开始日期" default-time="00:00:00" />
+      <el-date-picker v-model="listQuery.endtime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="结束日期" default-time="23:59:00" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -17,39 +18,33 @@
       </span></div>
     <div id="tablePrint" ref="print">
       <el-table
-        :id="table"
+        id="tabData"
         :key="tableKey"
         v-loading="listLoading"
         :show-summary="true"
         :summary-method="getSummaries"
         :data="list"
+        size="mini"
         border
         fit
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="序号" prop="index" align="center" width="60">
-          <template slot-scope="scope">
-            <span>{{ scope.row.index }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="卡号" prop="CardNo" align="center" width="160" />
-        <el-table-column label="持卡人" prop="MasterName" align="center" width="90" />
-        <el-table-column label="账户名称" prop="AccName" align="center" width="160" />
-        <el-table-column label="起初余额" prop="StartAmt" align="center" width="90" />
-        <el-table-column label="储值" prop="DepositMoney" align="center" width="90" />
-        <el-table-column label="优惠" prop="PreMoney" align="center" width="90" />
-        <el-table-column label="消费" prop="TradeMoney" align="center" width="90" />
-        <el-table-column label="扣款" prop="DeDepositMoney" align="center" width="90" />
-        <el-table-column label="退钱" prop="ReturnMoney" align="center" width="90" />
-        <el-table-column label="备付金" prop="RemarkMoney" align="center" width="90" />
-        <el-table-column label="期末余额" prop="EndAmt" align="center" width="90" />
-        <el-table-column label="差额" prop="DiffMoney" align="center" width="90" />
+        <el-table-column label="序号" type="index" align="center" width="60" />
+        <el-table-column label="卡号" prop="CardNo" align="center" width="120" />
+        <el-table-column label="持卡人" prop="HolderName" align="center" width="80" />
+        <el-table-column label="账户名称" prop="AccName" align="center" width="120" />
+        <el-table-column label="期初余额" prop="Balance1" align="center" width="80" />
+        <el-table-column label="储值" prop="Deposit" align="center" width="80" />
+        <el-table-column label="优惠" prop="Pre" align="center" width="70" />
+        <el-table-column label="消费" prop="Consume" align="center" width="80" />
+        <el-table-column label="扣款" prop="Undeposit" align="center" width="80" />
+        <el-table-column label="退钱" prop="Return" align="center" width="70" />
+        <el-table-column label="备付金" prop="Refund" align="center" width="70" />
+        <el-table-column label="期末余额" prop="Balance2" align="center" width="80" />
+        <el-table-column label="差额" prop="Difference" align="center" width="70" />
       </el-table>
     </div>
-
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
   </div>
 </template>
 
@@ -57,10 +52,10 @@
 import { cardBalanceQuery } from '@/api/card'
 // import printJS from 'print-js'
 import waves from '@/directive/waves' // waves directive
-import Pagination from '@/components/Pagination' // secondary package based on el-pagination
+import { tableToExcel } from '@/utils/excelUtils'
 export default {
   name: 'CardBalanceQuery',
-  components: { Pagination },
+  components: { },
   directives: { waves },
   filters: {
   },
@@ -69,17 +64,12 @@ export default {
       tableKey: 0,
       list: null,
       total: 0,
-
       listLoading: true,
-      stationList: null,
-      timespan: null,
       listQuery: {
-        page: 1,
-        limit: 20,
         begintime: '',
         endtime: '',
-        CardNo: '',
-        checked: false
+        cardNo: '',
+        onlyUnBalance: 0
       },
       downloadLoading: false
     }
@@ -91,23 +81,8 @@ export default {
     this.getList()
   },
   methods: {
-    getBegintime() {
-      if (this.timespan && this.timespan[0]) {
-        return this.timespan[0].toString()
-      }
-      return null
-    },
-    getEndtime() {
-      if (this.timespan && this.timespan[1]) {
-        return this.timespan[1].toString()
-      }
-      return null
-    },
-
     getList() {
       this.listLoading = true
-      this.listQuery.begintime = this.getBegintime()
-      this.listQuery.endtime = this.getEndtime()
       cardBalanceQuery(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
@@ -147,28 +122,18 @@ export default {
       return sums
     },
     handleFilter() {
-      this.listQuery.page = 1
       this.getList()
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['序号', '卡号', '持卡人', '账户名称', '期初', '储值', '优惠', '消费', '扣款', '退钱', '备付金', '期末余额', '差额']
-        const filterVal = ['index', 'CardNo', 'MasterName', 'AccName', 'StartAmt', 'DepositMoney', 'PreMoney', 'TradeMoney', 'DeDepositMoney', 'ReturnMoney', 'RemarkMoney', 'EndAmt', 'DiffMoney']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '用户卡平衡表'
-        })
+      var tableName = '#tabData'
+      var fileName = '用户卡平衡表'
+      var dataTmp = document.querySelector(tableName)
+      try {
+        tableToExcel(dataTmp, fileName)
+      } finally {
         this.downloadLoading = false
-      })
-    },
-
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        return v[j]
-      }))
+      }
     }
   }
 }

@@ -2,30 +2,33 @@ import request from '@/utils/request'
 
 export function payWayDetailListQuery(query) {
   return request({
-    url: '/payWay/payWayDetailListQuery',
+    url: '/PaywayInfo/payWayDetailListQuery',
     method: 'get',
     params: query
   })
 }
 export function payWayAdd(query) {
   return request({
-    url: '/payWay/payWayAdd',
+    url: '/PaywayInfo/payWayAdd',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function payWayUpdate(query) {
   return request({
-    url: '/payWay/payWayUpdate',
+    url: '/PaywayInfo/payWayUpdate',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 export function payWayDelete(query) {
   return request({
-    url: '/payWay/payWayDelete',
+    url: '/PaywayInfo/payWayDelete',
     method: 'post',
-    params: query
+    headers: { 'Content-Type': 'application/json' },
+    data: JSON.stringify(query)
   })
 }
 

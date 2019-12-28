@@ -1,12 +1,8 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-
-      <el-select v-model="listQuery.stationNo" placeholder="发卡点" clearable style="width: 200px" class="filter-item">
-        <el-option v-for="item in stationList" :key="item.stationno" :label="item.stationname" :value="item.stationno" />
-      </el-select>
-
-      <el-date-picker v-model="timespan" class="filter-item" type="datetimerange" align="right" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['12:00:00', '08:00:00']" />
+      <el-date-picker v-model="listQuery.begintime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="开始日期" default-time="00:00:00" />
+      <el-date-picker v-model="listQuery.endtime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="结束日期" default-time="23:59:00" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -14,10 +10,10 @@
 
     <div>
       <el-table
+        id="tabData"
         v-loading="listLoading"
         :show-header="true"
         :data="sum"
-
         border
         :span-method="objectSpanMethod"
         :cell-style="cellStyleMethod"
@@ -25,19 +21,18 @@
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="" prop="itemID" align="center" width="200" />
+        <el-table-column label="" prop="itemID" align="center" width="100" />
         <el-table-column label="类型" prop="itemTypeName" align="center" width="300" />
-        <el-table-column label="金额" prop="itemMoney" align="center" width="300" />
-        <el-table-column label="合计" prop="itemSum" align="center" width="300" />
+        <el-table-column label="金额" prop="itemMoney" align="center" width="150" />
+        <el-table-column label="合计" prop="itemSum" align="center" width="250" />
       </el-table>
     </div>
-
   </div>
 </template>
 
 <script>
 import { cardDaySettleSum } from '@/api/card'
-import { stationListQuery } from '@/api/base'
+import { tableToExcel } from '@/utils/excelUtils'
 // import printJS from 'print-js'
 import waves from '@/directive/waves' // waves directive
 export default {
@@ -50,22 +45,32 @@ export default {
     return {
       tableKey: 0,
       list: {
-        startAccBalance: '0.00',
-        startCardAccBalance: '0.00',
-        startCardBalance: '0.00',
-        startSumBalacne: '0.00',
-        saveMoney: '0.00',
-        preMoney: '0.00',
-        reSaveMoney: '0.00',
-        tradeMoney: '0.00',
-        returnMoney: '0.00',
-        reDeposit: '0.00',
-        durationSum: '0.00',
-        endAccBalance: '0.00',
-        endCardAccBalance: '0.00',
-        endCardBalance: '0.00',
-        endSumBalacne: '0.00',
-        isBalance: '否',
+        SaveMoney: '0.00',
+        PreMoney: '0.00',
+        OldAccBalance: '0.00',
+        AccBalance: '0.00',
+        OldCardAccBalance: '0.00',
+        CardAccBalance: '0.00',
+        OldCardBalance: '0.00',
+        CardBalance: '0.00',
+        AccCorrect: '0.00',
+        AccViment: '0.00',
+        AccUnViment: '0.00',
+        AccDeposit: '0.00',
+        AccUnDeposit: '0.00',
+        AccUnGrey: '0.00',
+        AccConsume: '0.00',
+        AccDelete: '0.00',
+        UserDeposit: '0.00',
+        UserUnDeposit: '0.00',
+        UserUngrey: '0.00',
+        UserConsume: '0.00',
+        UserPre: '0.00',
+        UserReturnCard: '0.00',
+        OldUserCardBalance: '0.00',
+        UserCardBalance: '0.00',
+        PreRefund: '0.00',
+        IsBalance: '否',
         nowDate: ''
       },
       total: 0,
@@ -88,61 +93,63 @@ export default {
         {
           itemID: 'C1',
           itemTypeName: '期初单位账户余额',
-          itemMoney: this.list.startAccBalance,
-          itemSum: this.list.startSumBalacne
+          itemMoney: this.list.OldAccBalance,
+          itemSum: this.list.OldAccBalance + this.list.OldCardAccBalance + this.list.OldCardBalance + this.list.OldUserCardBalance
         }, {
           itemID: '期初卡账余额',
-          itemTypeName: this.list.startCardAccBalance,
+          itemTypeName: this.list.OldCardAccBalance,
           itemMoney: '',
           itemSum: ''
         }, {
           itemID: '期初卡余额',
-          itemTypeName: this.list.startCardAccBalance,
+          itemTypeName: this.list.OldCardBalance + this.list.OldUserCardBalance,
           itemMoney: '',
           itemSum: ''
         }, {
           itemID: 'A',
           itemTypeName: '存钱金额',
-          itemMoney: this.list.saveMoney,
-          itemSum: this.list.durationSum
+          itemMoney: this.list.SaveMoney + this.list.UserDeposit,
+          itemSum: this.list.SaveMoney + this.list.PreMoney + this.list.UserDeposit + this.list.UserPre -
+          this.list.AccCorrect - this.list.AccConsume - this.list.UserConsume - this.list.AccDelete - this.list.UserReturnCard - this.list.UserUnDeposit
+          // 客户存钱 + 客户优惠 + 散户储值 - 冲正 - 客户消费 - 散户消费 -  客户销户 - 散户退卡 - 散户圈提
         }, {
           itemID: 'B',
           itemTypeName: '优惠金额',
-          itemMoney: this.list.preMoney,
+          itemMoney: this.list.PreMoney + this.list.UserPre,
           itemSum: ''
         }, {
           itemID: 'C',
           itemTypeName: '冲正',
-          itemMoney: this.list.reSaveMoney,
+          itemMoney: this.list.AccCorrect,
           itemSum: ''
         }, {
           itemID: 'D',
           itemTypeName: '消费',
-          itemMoney: this.list.tradeMoney,
+          itemMoney: this.list.UserConsume + this.list.AccConsume,
           itemSum: ''
         }, {
           itemID: 'E',
           itemTypeName: '退钱',
-          itemMoney: this.list.returnMoney,
+          itemMoney: this.list.AccDelete + this.list.UserReturnCard,
           itemSum: ''
         }, {
           itemID: 'F',
           itemTypeName: '散户圈提',
-          itemMoney: this.list.reDeposit,
+          itemMoney: this.list.UserUnDeposit,
           itemSum: ''
         }, {
           itemID: 'C2',
           itemTypeName: '期末单位账户余额',
-          itemMoney: this.list.endAccBalance,
-          itemSum: this.list.endSumBalacne
+          itemMoney: this.list.AccBalance,
+          itemSum: this.list.AccBalance + this.list.CardAccBalance + this.list.CardBalance + this.list.UserCardBalance + this.list.PreRefund
         }, {
-          itemID: '期末卡账月',
-          itemTypeName: this.list.endCardAccBalance,
+          itemID: '期末卡账余额',
+          itemTypeName: this.list.CardAccBalance,
           itemMoney: '',
           itemSum: ''
         }, {
           itemID: '期末卡余额',
-          itemTypeName: this.list.endCardAccBalance,
+          itemTypeName: this.list.CardBalance + this.list.UserCardBalance,
           itemMoney: '',
           itemSum: ''
         }, {
@@ -151,8 +158,8 @@ export default {
           itemMoney: '',
           itemSum: ''
         }, {
-          itemID: '平衡失算结果',
-          itemTypeName: this.list.isBalance,
+          itemID: '平衡试算结果',
+          itemTypeName: this.list.IsBalance === 0 ? '是' : '否',
           itemMoney: '时间:' + this.list.nowDate,
           itemSum: ''
         }, {
@@ -165,36 +172,12 @@ export default {
     }
   },
   created() {
-    this.getStationList()
     this.getList()
   },
   methods: {
-    getBegintime() {
-      if (this.timespan && this.timespan[0]) {
-        return this.timespan[0].toString()
-      }
-      return null
-    },
-    getEndtime() {
-      if (this.timespan && this.timespan[1]) {
-        return this.timespan[1].toString()
-      }
-      return null
-    },
-    getStationList() {
-      this.listLoading = true
-      stationListQuery(this.listQuery).then(response => {
-        this.stationList = response.data.items
-        // Just to simulate the time of the request
-        setTimeout(() => {
-          this.listLoading = false
-        }, 1.5 * 1000)
-      })
-    },
+
     getList() {
       this.listLoading = true
-      this.listQuery.begintime = this.getBegintime()
-      this.listQuery.endtime = this.getEndtime()
       cardDaySettleSum(this.listQuery).then(response => {
         this.list = response.data.items
         // Just to simulate the time of the request
@@ -267,17 +250,18 @@ export default {
       }
     },
     handleFilter() {
-      this.listQuery.page = 1
       this.getList()
     },
     handleDownload() {
       this.downloadLoading = true
-    },
-
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        return v[j]
-      }))
+      var tableName = '#tabData'
+      var fileName = '日记信息表'
+      var dataTmp = document.querySelector(tableName)
+      try {
+        tableToExcel(dataTmp, fileName)
+      } finally {
+        this.downloadLoading = false
+      }
     }
   }
 }

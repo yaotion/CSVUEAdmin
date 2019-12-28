@@ -7,10 +7,10 @@ for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
     optTime: '@datetime',
-    ScoreType: '----',
-    Score: '@integer(200,1000)',
-    ScoreBalance: '@integer(200,1000)',
-    AWard: '@sentence'
+    OptType: '----',
+    GoodsCent: '@integer(200,1000)',
+    CurCent: '@integer(200,1000)',
+    GoodsName: '@sentence'
 
   }))
 }

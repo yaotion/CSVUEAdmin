@@ -37,7 +37,7 @@
         </el-table-column>
         <el-table-column label="是否启用" prop="OilEnabled" align="center" width="100">
           <template slot-scope="{row}">
-            <span>{{ row.OilEnabled===true?"√":"" }}</span>
+            <span>{{ row.OilEnabled===1?"√":"" }}</span>
           </template>
         </el-table-column>
         <el-table-column v-if="notExporting" label="操作" align="center" width="230" class-name="small-padding fixed-width">
@@ -148,18 +148,7 @@ export default {
       centerOilAdd(this.temp).then(() => {
         this.temp.OilEnabled = true
         this.temp.mode = 0
-        for (const v of this.list) {
-          if (v.OilCode === this.temp.OilCode) {
-            const index = this.list.indexOf(v)
-            this.list.splice(index, 1, this.temp)
-            this.$message({
-              message: 'The oil has been enabled',
-              type: 'success'
-            })
-            break
-          }
-        }
-        this.reOrderList()
+        this.handleFilter()
       })
     },
 
@@ -169,18 +158,7 @@ export default {
       centerOilUpdate(this.temp).then(() => {
         this.temp.OilEnabled = true
         this.temp.mode = 0
-        for (const v of this.list) {
-          if (v.OilCode === this.temp.OilCode) {
-            const index = this.list.indexOf(v)
-            this.list.splice(index, 1, this.temp)
-            this.$message({
-              message: 'The oil has been enabled',
-              type: 'success'
-            })
-            break
-          }
-        }
-        this.reOrderList()
+        this.handleFilter()
       })
     },
     handleDeleteMethod(row) {
@@ -191,22 +169,7 @@ export default {
           type: 'success',
           duration: 2000
         })
-        this.temp = Object.assign({}, row)
-        this.temp.OilPrice = 0.00
-        this.temp.OilDensity = 0.00
-        this.temp.OilEnabled = false
-        for (const v of this.list) {
-          if (v.OilCode === this.temp.OilCode) {
-            const index = this.list.indexOf(v)
-            this.list.splice(index, 1, this.temp)
-            this.$message({
-              message: 'The oil has been disabled',
-              type: 'success'
-            })
-            break
-          }
-        }
-        this.reOrderList()
+        this.handleFilter()
       })
     },
     handleDelete(row) {

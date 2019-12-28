@@ -1,34 +1,17 @@
 import Mock from 'mockjs'
 const List = []
-const OilCodeArray = ['1020', '1040', '2001']
-const OilNameArray = ['92#', '95#', '0#']
+
 const count = 10
 
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
-
+    StationNo: '000' + '@integer(1,1)',
+    Emp_No: '000' + '@integer(1,1)',
+    Emp_Name: '@cname',
     RandID: '@integer(0, 2)',
-    OilName: function() {
-      return OilNameArray[this.RandID]
-    },
-    OilCode: function() {
-      return OilCodeArray[this.RandID]
-    },
-    CashierNo: '000' + '@integer(1,1)',
 
-    XJMoneys: '@float(200,2000,2,2)',
-    YPMoneys: '@float(200,2000,2,2)',
-    YHKMoneys: '@float(200,2000,2,2)',
-    XYKMoneys: '@float(200,2000,2,2)',
-    JZMoneys: '@float(200,2000,2,2)',
-    QTMoneys: '@float(200,2000,2,2)',
-    QT1Moneys: '@float(200,2000,2,2)',
-    WXMoneys: '@float(200,2000,2,2)',
-
-    ZFBMoneys: '@float(200,2000,2,2)',
-
-    YLMoneys: '@float(200,2000,2,2)',
+    Sum_Qty: '@float(3000,20000,2,2)',
     pageviews: '@integer(300, 5000)'
 
   }))
@@ -36,7 +19,7 @@ for (let i = 0; i < count; i++) {
 
 export default [
   {
-    url: '/station/stationDayReportByCashierQuery',
+    url: '/station/stationDayReportByEmpQty',
     type: 'get',
     response: config => {
       const { begintime, endtime, page = 1, limit = 20, stationNo } = config.query

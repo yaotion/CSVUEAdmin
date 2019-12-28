@@ -40,8 +40,10 @@ import cardPSAMQuery from './card/cardPSAMQuery'
 import cardOilStationSum from './card/cardOilStationSum'
 import cardFuzzySearch from './card/cardFuzzySearch'
 import cardPreQuery from './card/cardPreQuery'
-import cardMZMKuery from './card/cardMZMKuery'
+import cardMZMKQuery from './card/cardMZMKQuery'
 import cardChangePriceQuery from './card/cardChangePriceQuery'
+import cardStationRecTime from './card/cardStationRecTime'
+
 import cardBlackListQuery from './card/cardBlackListQuery'
 import cardBlackListCheckQuery from './card/cardBlackListCheckQuery'
 import cardOperatorSum from './card/cardOperatorSum'
@@ -52,20 +54,21 @@ import cardChequeQuery from './card/cardChequeQuery'
 import cardDaySettleSum from './card/cardDaySettleSum'
 import custDeductQuery from './card/custDeductQuery'
 import cardBalanceQuery from './card/cardBalanceQuery'
-import reportSaleSectionQuery from './report/reportSaleSectionQuery'
+import reportSaleSectionQuery from './card/reportSaleSectionQuery'
 import cardInvoiceQuery from './card/cardInvoiceQuery'
 import stationTankMonitorQuery from './station/stationTankMonitorQuery'
 import stationDayReportByTerminalQuery from './station/stationDayReportByTerminalQuery'
 import stationDayReportByOilQuery from './station/stationDayReportByOilQuery'
 import stationDayReportByTankQuery from './station/stationDayReportByTankQuery'
-import stationDayReportByOptQuery from './station/stationDayReportByOptQuery'
-import stationDayReportByCashierQuery from './station/stationDayReportByCashierQuery'
+import stationDayReportByEmpQty from './station/stationDayReportByEmpQty'
+import stationDayReportByEmpMoney from './station/stationDayReportByEmpMoney'
 import stationTankAddQuery from './station/stationTankAddQuery'
+import stationStationTanks from './station/stationStationTanks'
 import stationOilChangeQuery from './station/stationOilChangeQuery'
 import stationMachineQuery from './station/stationMachineQuery'
 import stationTankChangeQuery from './station/stationTankChangeQuery'
 import stationOptLogQuery from './station/stationOptLogQuery'
-import stationTankStoreQuery from './station/stationTankStoreQuery'
+import stationTankShiftQuery from './station/stationTankShiftQuery'
 import stationShiftNowYYLByTerminalQuery from './station/stationShiftNowYYLByTerminalQuery'
 import stationShiftNowYYLByOilQuery from './station/stationShiftNowYYLByOilQuery'
 import stationShiftNowYYLDetailQuery from './station/stationShiftNowYYLDetailQuery'
@@ -89,7 +92,7 @@ import sumGoodsTradeByCardQuery from './station/sumGoodsTradeByCardQuery'
 import sumGoodsTradeByGoodsQuery from './station/sumGoodsTradeByGoodsQuery'
 import sumGoodsTradeByOptQuery from './station/sumGoodsTradeByOptQuery'
 import sumGoodsTradeByPayWayQuery from './station/sumGoodsTradeByPayWayQuery'
-import stationManage from './stationManage'
+import stationInfo from './stationInfo'
 import payWayManage from './payWayManage'
 import centerOilManage from './centerOilManage'
 import operatorManage from './operatorManage'
@@ -140,8 +143,9 @@ const mocks = [
   ...cardOilStationSum,
   ...cardFuzzySearch,
   ...cardPreQuery,
-  ...cardMZMKuery,
+  ...cardMZMKQuery,
   ...cardChangePriceQuery,
+  ...cardStationRecTime,
   ...cardBlackListQuery,
   ...cardBlackListCheckQuery,
   ...cardOperatorSum,
@@ -158,14 +162,15 @@ const mocks = [
   ...stationDayReportByTerminalQuery,
   ...stationDayReportByOilQuery,
   ...stationDayReportByTankQuery,
-  ...stationDayReportByOptQuery,
-  ...stationDayReportByCashierQuery,
+  ...stationDayReportByEmpQty,
+  ...stationDayReportByEmpMoney,
   ...stationTankAddQuery,
+  ...stationStationTanks,
   ...stationOilChangeQuery,
   ...stationMachineQuery,
   ...stationTankChangeQuery,
   ...stationOptLogQuery,
-  ...stationTankStoreQuery,
+  ...stationTankShiftQuery,
   ...stationShiftNowYYLByTerminalQuery,
   ...stationShiftNowYYLByOilQuery,
   ...stationShiftNowYYLDetailQuery,
@@ -188,7 +193,7 @@ const mocks = [
   ...sumGoodsTradeByOptQuery,
   ...sumGoodsTradeByPayWayQuery,
   ...base,
-  ...stationManage,
+  ...stationInfo,
   ...payWayManage,
   ...centerOilManage,
   ...operatorManage,

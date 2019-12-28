@@ -6,11 +6,10 @@ const count = 100
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
-    cardtype: +Mock.Random.integer(1, 6),
-    cardno: '01000111100000' + '@string("number", 4, 4)',
-    maketime: '@datetime',
-    operator: '@cname',
-    pageviews: '@integer(300, 5000)'
+    CardTypeName: +Mock.Random.integer(1, 6),
+    CardNo: '01000111100000' + '@string("number", 4, 4)',
+    OptTime: '@datetime',
+    OptNo: '@cname'
   }))
 }
 

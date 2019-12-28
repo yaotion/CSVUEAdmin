@@ -4,10 +4,8 @@
 
 <script>
 import echarts from 'echarts'
-import resize from './mixins/resize'
 
 export default {
-  mixins: [resize],
   props: {
     className: {
       type: String,
@@ -27,18 +25,28 @@ export default {
     },
 
     mainData: {
-      type: Object,
+      type: Array,
       default: function() { return [] } },
 
     xData: {
-      type: Object,
+      type: Array,
       default: function() { return [] } },
     yData: {
-      type: Object,
+      type: Array,
       default: function() { return [] } }
   },
   data() {
 
+  },
+  watch: {
+    mainData: function() {
+      this.initChart()
+    },
+    xData: function() {
+      this.initChart()
+    }, yData: function() {
+      this.initChart()
+    }
   },
   mounted() {
     this.initChart()
@@ -63,86 +71,46 @@ export default {
           textStyle: {
             color: '#fff',
             fontSize: '22'
-          },
-          subtextStyle: {
-            color: '#90979c',
-            fontSize: '16'
           }
         },
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            textStyle: {
-              color: '#fff'
-            }
-          }
-        },
+
         toolbox: {
-          show: true,
-          feature: {
-            mark: { show: true },
-            dataView: { show: true, readOnly: false },
-            magicType: { show: true, type: ['line', 'bar'] },
-            restore: { show: true },
-            saveAsImage: { show: true }
-          }
+          show: false
         },
         grid: {
-          left: '5%',
-          right: '5%',
           borderWidth: 0,
-          top: 150,
+          top: 60,
           bottom: 95,
           textStyle: {
             color: '#fff'
           }
         },
-
         calculable: true,
         xAxis: [{
           type: 'time',
-          splitNumber: 7,
+          splitNumber: 10,
           axisLine: {
             lineStyle: {
               color: '#90979c'
             }
           },
-          boundaryGap: true,
-          splitLine: {
-            show: false
-          },
+          boundaryGap: false,
           axisTick: {
             show: false
           },
-          splitArea: {
-            show: false
-          },
-          axisLabel: {
-            interval: 0
-
-          }
-          // data: this.xData
+          data: this.xData
         }],
         yAxis: [
           {
             type: 'category',
             data: this.yData,
             boundaryGap: true,
-            splitLine: {
-              show: false
-            },
             axisLine: {
               lineStyle: {
                 color: '#90979c'
               }
             },
             axisTick: {
-              show: false
-            },
-            axisLabel: {
-              interval: 0
-            },
-            splitArea: {
               show: false
             }
           }

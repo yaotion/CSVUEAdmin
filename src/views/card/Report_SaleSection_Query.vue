@@ -1,10 +1,12 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-select v-model="listQuery.StationNo" placeholder="站点" clearable style="width: 200px" class="filter-item">
+      <el-select v-model="listQuery.stationNo" placeholder="站点" clearable style="width: 200px" class="filter-item">
         <el-option v-for="item in stationList" :key="item.stationno" :label="item.stationname" :value="item.stationno" />
       </el-select>
-      <el-date-picker v-model="timespan" class="filter-item" type="datetimerange" align="right" value-format="yyyy-MM-dd HH:mm:ss" start-placeholder="开始日期" end-placeholder="结束日期" :default-time="['12:00:00', '08:00:00']" />
+
+      <el-date-picker v-model="listQuery.begintime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="开始日期" default-time="00:00:00" />
+      <el-date-picker v-model="listQuery.endtime" class="filter-item" type="datetime" align="right" value-format="yyyy-MM-dd HH:mm:ss" placeholder="结束日期" default-time="23:59:00" />
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -15,22 +17,20 @@
 
     <div id="tablePrint" ref="print">
       <el-table
+        id="tabData"
         v-loading="listLoading"
         :show-summary="true"
+        size="mini"
         :summary-method="getSummaries"
-        :data="list"
+        :data="sum"
         border
         fit
         highlight-current-row
         style="width: 100%;"
       >
-        <el-table-column label="序号" prop="index" align="center" width="60">
-          <template slot-scope="scope">
-            <span>{{ scope.row.index }}</span>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="油品" prop="OilName" align="center" width="80" />
+        <el-table-column label="序号" type="index" align="center" width="60" />
+        <el-table-column label="油品" prop="StationNo" align="center" width="80" />
+        <el-table-column label="油品" prop="Oil_Code" align="center" width="80" />
         <el-table-column label="单价" prop="Price" align="center" width="60" />
         <el-table-column label="现金" align="center">
           <el-table-column label="升数" prop="CashQty" align="center" width="80" />
@@ -85,7 +85,8 @@
  }
 </style>
 <script>
-import { reportSaleSectionQuery } from '@/api/report'
+import { reportSaleSectionQuery } from '@/api/card'
+import { tableToExcel } from '@/utils/excelUtils'
 // import printJS from 'print-js'
 import waves from '@/directive/waves' // waves directive
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -99,13 +100,10 @@ export default {
     return {
       list: null,
       total: 0,
-
       listLoading: true,
       stationList: null,
       timespan: null,
       listQuery: {
-        page: 1,
-        limit: 20,
         begintime: '',
         endtime: '',
         StationNo: ''
@@ -114,29 +112,86 @@ export default {
     }
   },
   computed: {
+    sum: function() {
+      var rlt = []
+      if (this.list === null) return rlt
 
+      this.list.forEach(element => {
+        var item
+        if (rlt.length > 0) {
+          item = rlt.find(function(x) {
+            if ((x.StationNo === element.StationNo) && (x.Oil_Code === element.Oil_Code) && (x.Price === element.Price)) {
+              return true
+            }
+          })
+        }
+        if (item === undefined) {
+          item = {
+            StationNo: element.StationNo,
+            Oil_Code: element.Oil_Code,
+            Price: element.Price,
+            CashQty: 0,
+            CashMoney: 0,
+            BankQty: 0,
+            BankMoney: 0,
+            NetQty: 0,
+            NetMoney: 0,
+            CardQty: 0,
+            CardMoney: 0,
+            CustQty: 0,
+            CustMoney: 0,
+            BookQty: 0,
+            BookMoney: 0,
+            SumQty: 0,
+            SumMoney: 0
+          }
+          rlt.push(item)
+        }
+        item.SumQty += element.SumQty
+        item.SumMoney += element.SumMoney
+        switch (element.PAY_WAY) {
+          case 1:// 现金
+            item.CashQty += element.SumQty
+            item.CashMoney += element.SumMoney
+            break
+          case 12:// 银联
+            item.BankQty += element.SumQty
+            item.BankMoney += element.SumMoney
+            break
+          case 9: // 微信支付宝
+          case 11:
+          case 13:
+          case 14:
+            item.NetQty += element.SumQty
+            item.NetMoney += element.SumMoney
+            break
+          case 4: // IC卡
+            // 记账卡
+            if (element.IsJiZhang === 1) {
+              item.BookQty += element.SumQty
+              item.BookMoney += element.SumMoney
+            } else if (element.CardAcc === 'cust') {
+              // 客户卡
+              item.BookQty += element.SumQty
+              item.BookMoney += element.SumMoney
+            } else {
+              // 散户卡
+              item.CardQty += element.SumQty
+              item.CardMoney += element.SumMoney
+            }
+            break
+        }
+      })
+      return rlt
+    }
   },
   created() {
     this.getList()
   },
   methods: {
-    getBegintime() {
-      if (this.timespan && this.timespan[0]) {
-        return this.timespan[0].toString()
-      }
-      return null
-    },
-    getEndtime() {
-      if (this.timespan && this.timespan[1]) {
-        return this.timespan[1].toString()
-      }
-      return null
-    },
 
     getList() {
       this.listLoading = true
-      this.listQuery.begintime = this.getBegintime()
-      this.listQuery.endtime = this.getEndtime()
       reportSaleSectionQuery(this.listQuery).then(response => {
         this.list = response.data.items
         this.total = response.data.total
@@ -180,28 +235,18 @@ export default {
       return sums
     },
     handleFilter() {
-      this.listQuery.page = 1
       this.getList()
     },
     handleDownload() {
       this.downloadLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['序号', '卡号', '持卡人', '账户名称', '期初', '储值', '优惠', '消费', '扣款', '退钱', '备付金', '期末余额', '差额']
-        const filterVal = ['index', 'CardNo', 'MasterName', 'AccName', 'StartAmt', 'DepositMoney', 'PreMoney', 'TradeMoney', 'DeDepositMoney', 'ReturnMoney', 'RemarkMoney', 'EndAmt', 'DiffMoney']
-        const data = this.formatJson(filterVal, this.list)
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '油品销售区间报表'
-        })
+      var tableName = '#tabData'
+      var fileName = '销售区间报表'
+      var dataTmp = document.querySelector(tableName)
+      try {
+        tableToExcel(dataTmp, fileName)
+      } finally {
         this.downloadLoading = false
-      })
-    },
-
-    formatJson(filterVal, jsonData) {
-      return jsonData.map(v => filterVal.map(j => {
-        return v[j]
-      }))
+      }
     }
   }
 }

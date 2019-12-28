@@ -10,31 +10,28 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     StationNo: '0000000' + '@integer(1,9)',
     RandID: '@integer(0, 2)',
-    OilName: function() {
+    Oil_Name: function() {
       return OilNameArray[this.RandID]
     },
-    OilCode: function() {
+    Oil_Code: function() {
       return OilCodeArray[this.RandID]
     },
-    BussDate: '@date',
+    Buss_Date: '@date',
     Price: '@float(5,10,2,2)',
-
     SJMoneys: '@float(200,1000,2,2)',
-
     XJMoneys: '@float(200,1000,2,2)',
     YPMoneys: '@float(200,1000,2,2)',
     YHKMoneys: '@float(200,1000,2,2)',
     XYKMoneys: '@float(200,1000,2,2)',
     JZMoneys: '@float(200,1000,2,2)',
-
     QTMoneys: '@float(200,1000,2,2)',
     QT1Moneys: '@float(200,1000,2,2)',
-    AllQtys: '@float(200,1000,2,2)',
+    TotalQtys: '@float(200,1000,2,2)',
 
-    ThisMonthQtys: '@float(200,1000,2,2)',
-    AllMoneys: '@float(200,1000,2,2)',
-    EndQtys: '@float(200,1000,2,2)',
-    AddPercent: '%' + '@float(1,99,2,2)'
+    MonthQtys: '@float(200,1000,2,2)',
+    TotalMoneys: '@float(200,1000,2,2)',
+    End_li: '@float(200,1000,2,2)',
+    CanAdd: '%' + '@float(1,99,2,2)'
   }))
 }
 

@@ -8,11 +8,11 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     StationNo: '0000000' + '@integer(1,9)',
 
-    OptNo: '0' + '@integer(1,9)',
-    OptName: '@cname',
+    Emp_No: '0' + '@integer(1,9)',
+    Emp_Name: '@cname',
     // const filterVal = ['index', 'StationNo', 'BatID', 'Terminal', 'MachNo',
     // 'Port', 'MachType', 'TankNo', 'OilName', 'UpdateTime']
-    FunName: '@csentence',
+    FunctionName: '@csentence',
 
     OptTime: '@datetime'
   }))

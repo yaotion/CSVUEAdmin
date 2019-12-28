@@ -7,6 +7,7 @@ for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
     stationno: '0000000' + '@string("number", 1, 1)',
+    StationName: '0000000' + '@string("number", 1, 1)',
     MasterName: '@cname',
     OptName: '@cname',
     OptNo: '@string("number", 4, 4)',

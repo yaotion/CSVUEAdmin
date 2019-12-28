@@ -7,37 +7,37 @@ const count = 10
 for (let i = 0; i < count; i++) {
   List.push(Mock.mock({
     index: '@increment',
-    TankNo: '00' + i,
-    BussDate: '@datetime',
+    Tank_no: '00' + i,
+    AddTime: '@datetime',
     RandID: '@integer(0, 2)',
-    OilName: function() {
+    Oil_name: function() {
       return OilNameArray[this.RandID]
     },
     OilCode: function() {
       return OilCodeArray[this.RandID]
     },
-    StartHeight: '@float(200,2000,2,2)',
-    StartQty: '@float(200,2000,2,2)',
-    StartTemp: '@float(200,2000,2,2)',
-    StartDensity: '@float(200,2000,2,2)',
-    StartWeight: '@float(200,2000,2,2)',
-    EndHeight: '@float(200,2000,2,2)',
-    EndQty: '@float(200,2000,2,2)',
-    EndTemp: '@float(200,2000,2,2)',
-    EndDensity: '@float(200,2000,2,2)',
-    EndWeight: '@float(200,2000,2,2)',
+    Start_oilh: '@float(200,2000,2,2)',
+    Start_vol: '@float(200,2000,2,2)',
+    Start_temp: '@float(200,2000,2,2)',
+    Start_dens: '@float(200,2000,2,2)',
+    Start_wt: '@float(200,2000,2,2)',
+    End_oilh: '@float(200,2000,2,2)',
+    End_vol: '@float(200,2000,2,2)',
+    End_temp: '@float(200,2000,2,2)',
+    End_dens: '@float(200,2000,2,2)',
+    End_wt: '@float(200,2000,2,2)',
 
-    AddQty: '@float(200,2000,2,2)',
-    AddWeight: '@float(200,2000,2,2)',
+    Qty_vol: '@float(200,2000,2,2)',
+    Qty_wt: '@float(200,2000,2,2)',
 
-    BillQty: '@float(200,2000,2,2)',
-    BillDensity: '@float(200,2000,2,2)',
-    BillWeight: '@float(200,2000,2,2)',
-    LossQty: '@float(200,2000,2,2)',
-    LossWeight: '@float(200,2000,2,2)',
+    Doc_vol: '@float(200,2000,2,2)',
+    Doc_dens: '@float(200,2000,2,2)',
+    Doc_wt: '@float(200,2000,2,2)',
+    Lost_vol: '@float(200,2000,2,2)',
+    Lost_wt: '@float(200,2000,2,2)',
 
-    StartTime: '@datetime',
-    EndTime: '@datetime',
+    Start_time: '@datetime',
+    End_time: '@datetime',
     pageviews: '@integer(300, 5000)'
   }))
 }

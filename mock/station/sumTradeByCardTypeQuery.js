@@ -12,8 +12,8 @@ for (let i = 0; i < count; i++) {
       return TempList[this.RanID]
     },
 
-    Qtys: '@float(200,2000,2,2)',
-    Moneys: '@float(200,2000,2,2)',
+    SumQty: '@float(200,2000,2,2)',
+    SumMoney: '@float(200,2000,2,2)',
 
     pageviews: '@integer(300, 5000)'
 

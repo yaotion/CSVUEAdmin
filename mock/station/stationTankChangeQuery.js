@@ -10,32 +10,32 @@ for (let i = 0; i < count; i++) {
     index: '@increment',
     StationNo: '0000000' + '@integer(1,9)',
     RandID: '@integer(0, 2)',
-    OilName: function() {
+    Oil_Name: function() {
       return OilNameArray[this.RandID]
     },
     OilCode: function() {
       return OilCodeArray[this.RandID]
     },
 
-    BatID: '0001111111' + '@integer(1,9)',
+    TransOrder: '0001111111' + '@integer(1,9)',
 
-    TankNo: '@integer(0, 6)',
-    TankDiam: '@float(5,10,2,2)',
+    Tank_No: '@integer(0, 6)',
+    Tank_Diameter: '@float(5,10,2,2)',
 
-    TankLength: '@float(5,10,2,2)',
-    TankVolume: '@float(5,10,2,2)',
+    Tank_Length: '@float(5,10,2,2)',
+    Max_Volume: '@float(5,10,2,2)',
 
-    HighLevel: '@float(5,10,2,2)',
-    HHightLevel: '@float(5,10,2,2)',
+    High_Oil: '@float(5,10,2,2)',
+    High_High_Oil: '@float(5,10,2,2)',
 
-    LowLevel: '@float(5,10,2,2)',
-    LLowLevel: '@float(5,10,2,2)',
-    HighWater: '@float(5,10,2,2)',
-    HighTemp: '@float(5,10,2,2)',
-    LowTemp: '@float(5,10,2,2)',
+    Low_Oil: '@float(5,10,2,2)',
+    Low_Low_Oil: '@float(5,10,2,2)',
+    High_Water: '@float(5,10,2,2)',
+    High_Temp: '@float(5,10,2,2)',
+    Low_Temp: '@float(5,10,2,2)',
 
-    OilLevel: '@float(5,10,2,2)',
-    WaterLevel: '@float(5,10,2,2)',
+    Oil_Offset: '@float(5,10,2,2)',
+    Water_Offset: '@float(5,10,2,2)',
 
     UpdateTime: '@datetime',
     pageviews: '@integer(300, 5000)'
